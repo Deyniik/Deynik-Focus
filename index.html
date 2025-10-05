@@ -96,11 +96,6 @@
             transition: all 0.3s ease;
         }
         
-        .app-container.chat-open .main-content {
-            margin-right: 0;
-            width: calc(100% - 350px);
-        }
-        
         header {
             text-align: center;
             padding: 8px 0;
@@ -583,91 +578,58 @@
         }
         
         .chat-toggle-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(29, 185, 84, 0.9);
+            background: rgba(29, 185, 84, 0.3);
             border: 1px solid #1DB954;
             color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.4rem;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            font-size: 0.9rem;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            width: 100%;
         }
         
         .chat-toggle-btn:hover {
-            background: rgba(29, 185, 84, 1);
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
+            background: rgba(29, 185, 84, 0.5);
         }
         
-        .chat-sidebar {
-            width: 350px;
-            height: 100vh;
-            background: #191414;
-            border-radius: 12px;
-            margin: 12px 12px 12px 0;
+        .chat-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease;
-            transform: translateX(100%);
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            min-height: 200px;
+            display: none;
         }
         
-        .app-container.chat-open .chat-sidebar {
-            transform: translateX(0);
+        .chat-container.show {
+            display: flex;
         }
         
         .chat-header {
-            padding: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
-            justify-content: space-between;
-        }
-        
-        .chat-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #1DB954;
-            font-size: 1.1rem;
-        }
-        
-        .chat-close-btn {
-            background: transparent;
-            border: none;
-            color: #B3B3B3;
-            cursor: pointer;
-            font-size: 1.2rem;
-            transition: all 0.2s ease;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .chat-close-btn:hover {
-            background: rgba(29, 185, 84, 0.2);
+            gap: 8px;
+            margin-bottom: 10px;
             color: #1DB954;
         }
         
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
+            max-height: none;
+            margin-bottom: 10px;
             scrollbar-width: thin;
             scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+            display: flex;
+            flex-direction: column;
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -773,8 +735,7 @@
         .chat-input-container {
             display: flex;
             gap: 8px;
-            padding: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
             position: relative;
         }
         
@@ -814,11 +775,11 @@
         }
         
         .emoji-btn {
-            left: 18px;
+            left: 8px;
         }
         
         .gif-btn {
-            left: 50px;
+            left: 40px;
         }
         
         .emoji-btn:hover, .gif-btn:hover {
@@ -1113,16 +1074,6 @@
             h1 {
                 font-size: 1.5rem;
             }
-            
-            .chat-sidebar {
-                width: 100%;
-                margin: 0;
-                border-radius: 0;
-            }
-            
-            .app-container.chat-open .main-content {
-                display: none;
-            }
         }
 
         /* Темы */
@@ -1242,7 +1193,7 @@
                     </ul>
                 </div>
                 
-                <!-- Правая панель: Статистика и настройки -->
+                <!-- Правая панель: Статистика и чат -->
                 <div class="side-panel crt-effect">
                     <h2>Статистика</h2>
                     <div class="stats-container">
@@ -1267,75 +1218,70 @@
                             Установите любое время и работайте с фоновой музыкой.
                         </p>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Боковая панель чата -->
-        <div class="chat-sidebar crt-effect" id="chat-sidebar">
-            <div class="chat-header">
-                <div class="chat-title">
-                    <i class="fas fa-comments"></i>
-                    <h3>Чат</h3>
-                </div>
-                <button class="chat-close-btn" id="chat-close-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="chat-messages" id="chat-messages">
-                <div class="message">
-                    <span class="message-user">Система:</span>
-                    Загрузка чата...
-                    <span class="message-time">только что</span>
-                </div>
-            </div>
-            <div class="chat-input-container" id="chat-input-container">
-                <button class="emoji-btn" id="emoji-btn">
-                    <i class="far fa-smile"></i>
-                </button>
-                <button class="gif-btn" id="gif-btn">
-                    GIF
-                </button>
-                <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
-                <button class="chat-send-btn" id="chat-send-btn" disabled>
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-                
-                <!-- Окно эмодзи -->
-                <div class="emoji-picker" id="emoji-picker">
-                    <input type="text" class="emoji-search" id="emoji-search" placeholder="Поиск эмодзи...">
-                    <div class="emoji-categories">
-                        <button class="emoji-category active" data-category="all">Все</button>
-                        <button class="emoji-category" data-category="smileys">😀</button>
-                        <button class="emoji-category" data-category="hearts">❤️</button>
-                        <button class="emoji-category" data-category="objects">🔔</button>
-                    </div>
-                    <div class="emoji-grid" id="emoji-grid">
-                        <!-- Эмодзи будут добавлены через JavaScript -->
-                    </div>
-                </div>
-                
-                <!-- Окно GIF -->
-                <div class="gif-picker" id="gif-picker">
-                    <input type="text" class="gif-search" id="gif-search" placeholder="Поиск GIF...">
-                    <div class="gif-trending">
-                        <button class="gif-trending-btn" data-term="funny">Смешные</button>
-                        <button class="gif-trending-btn" data-term="music">Музыка</button>
-                        <button class="gif-trending-btn" data-term="dance">Танцы</button>
-                        <button class="gif-trending-btn" data-term="love">Любовь</button>
-                    </div>
-                    <div class="gif-results" id="gif-results">
-                        <!-- GIF будут добавлены через JavaScript -->
+                    <!-- Кнопка для открытия/закрытия чата -->
+                    <button class="chat-toggle-btn" id="chat-toggle-btn">
+                        <i class="fas fa-comments"></i> Открыть чат
+                    </button>
+
+                    <!-- Контейнер чата -->
+                    <div class="chat-container" id="chat-container">
+                        <div class="chat-header">
+                            <i class="fas fa-comments"></i>
+                            <h3>Чат</h3>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message">
+                                <span class="message-user">Система:</span>
+                                Загрузка чата...
+                                <span class="message-time">только что</span>
+                            </div>
+                        </div>
+                        <div class="chat-input-container" id="chat-input-container">
+                            <button class="emoji-btn" id="emoji-btn">
+                                <i class="far fa-smile"></i>
+                            </button>
+                            <button class="gif-btn" id="gif-btn">
+                                GIF
+                            </button>
+                            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
+                            <button class="chat-send-btn" id="chat-send-btn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            
+                            <!-- Окно эмодзи -->
+                            <div class="emoji-picker" id="emoji-picker">
+                                <input type="text" class="emoji-search" id="emoji-search" placeholder="Поиск эмодзи...">
+                                <div class="emoji-categories">
+                                    <button class="emoji-category active" data-category="all">Все</button>
+                                    <button class="emoji-category" data-category="smileys">😀</button>
+                                    <button class="emoji-category" data-category="hearts">❤️</button>
+                                    <button class="emoji-category" data-category="objects">🔔</button>
+                                </div>
+                                <div class="emoji-grid" id="emoji-grid">
+                                    <!-- Эмодзи будут добавлены через JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <!-- Окно GIF -->
+                            <div class="gif-picker" id="gif-picker">
+                                <input type="text" class="gif-search" id="gif-search" placeholder="Поиск GIF...">
+                                <div class="gif-trending">
+                                    <button class="gif-trending-btn" data-term="funny">Смешные</button>
+                                    <button class="gif-trending-btn" data-term="music">Музыка</button>
+                                    <button class="gif-trending-btn" data-term="dance">Танцы</button>
+                                    <button class="gif-trending-btn" data-term="love">Любовь</button>
+                                </div>
+                                <div class="gif-results" id="gif-results">
+                                    <!-- GIF будут добавлены через JavaScript -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Кнопка чата -->
-    <button class="chat-toggle-btn" id="chat-toggle-btn">
-        <i class="fas fa-comments"></i>
-    </button>
 
     <!-- Уведомление -->
     <div class="notification" id="notification">Текст уведомления</div>
@@ -1418,12 +1364,10 @@
             const notification = document.getElementById('notification');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const chatToggleBtn = document.getElementById('chat-toggle-btn');
-            const chatSidebar = document.getElementById('chat-sidebar');
-            const chatCloseBtn = document.getElementById('chat-close-btn');
+            const chatContainer = document.getElementById('chat-container');
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const chatSendBtn = document.getElementById('chat-send-btn');
-            const appContainer = document.getElementById('appContainer');
             const emojiBtn = document.getElementById('emoji-btn');
             const gifBtn = document.getElementById('gif-btn');
             const emojiPicker = document.getElementById('emoji-picker');
@@ -1445,6 +1389,7 @@
             let currentAudio = null;
             let currentRadioStation = null;
             let chatUnsubscribe = null;
+            let isChatOpen = false;
             
             // Инициализация
             updateTimerDisplay();
@@ -1785,7 +1730,7 @@
                     if (doc.exists) {
                         const data = doc.data();
                         totalPomodoroCount = data.totalPomodoros || 0;
-                        todayPomodoroCount = data.todayPomodoros || 0;
+                        todayPomodorosCount = data.todayPomodoros || 0;
                         
                         // Сброс дневного счетчика если это новый день
                         const lastUpdated = data.lastUpdated?.toDate();
@@ -2091,7 +2036,15 @@
             
             // Управление чатом
             function toggleChat() {
-                appContainer.classList.toggle('chat-open');
+                isChatOpen = !isChatOpen;
+                chatContainer.classList.toggle('show');
+                
+                if (isChatOpen) {
+                    chatToggleBtn.innerHTML = '<i class="fas fa-times"></i> Закрыть чат';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                } else {
+                    chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i> Открыть чат';
+                }
             }
             
             // Функции для аутентификации
@@ -2170,7 +2123,6 @@
             
             // Чат
             chatToggleBtn.addEventListener('click', toggleChat);
-            chatCloseBtn.addEventListener('click', toggleChat);
             
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
