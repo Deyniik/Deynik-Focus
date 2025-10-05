@@ -1955,6 +1955,7 @@
             let isChatOpen = false;
             let alarms = [];
             let alarmCheckInterval = null;
+            let todoUnsubscribe = null; // Добавляем отслеживание подписки на задачи
             
             // Инициализация
             updateClock();
@@ -1963,7 +1964,7 @@
             updateTimerDisplay();
             updateStopwatchDisplay();
             loadUserData();
-            loadTodos();
+            loadTodos(); // Загружаем задачи при инициализации
             loadChatHistory();
             loadAlarms();
             startAlarmChecker();
@@ -2026,7 +2027,7 @@
             function changeTaskDate(days) {
                 currentTaskDate.setDate(currentTaskDate.getDate() + days);
                 updateTaskDateDisplay();
-                loadTodos();
+                loadTodos(); // Перезагружаем задачи при смене даты
             }
             
             function updateTaskDateDisplay() {
@@ -2415,23 +2416,44 @@
                 }
             });
             
-            // ЗАДАЧИ
+            // ЗАДАЧИ - ИСПРАВЛЕННАЯ ВЕРСИЯ
             function addTodo() {
                 const text = todoInput.value.trim();
                 if (text === '') return;
+                
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы добавлять задачи', 'error');
+                    return;
+                }
                 
                 const todo = {
                     id: Date.now().toString(),
                     text: text,
                     completed: false,
                     date: getDateKey(currentTaskDate),
-                    createdAt: new Date()
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userId: user.uid // Добавляем ID пользователя
                 };
                 
+                // Сначала добавляем в DOM для мгновенного отображения
                 addTodoToDOM(todo);
-                saveTodo(todo);
-                todoInput.value = '';
-                showNotification('Задача добавлена!', 'success');
+                
+                // Затем сохраняем в Firebase
+                saveTodo(todo)
+                    .then(() => {
+                        todoInput.value = '';
+                        showNotification('Задача добавлена!', 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка сохранения задачи:', error);
+                        showNotification('Ошибка сохранения задачи', 'error');
+                        // Удаляем задачу из DOM если не удалось сохранить
+                        const todoItem = document.querySelector(`.todo-item[data-id="${todo.id}"]`);
+                        if (todoItem) {
+                            todoItem.remove();
+                        }
+                    });
             }
             
             function addTodoToDOM(todo) {
@@ -2487,20 +2509,21 @@
                 }
             }
             
-            // FIREBASE ДЛЯ ЗАДАЧ
+            // FIREBASE ДЛЯ ЗАДАЧ - ИСПРАВЛЕННАЯ ВЕРСИЯ
             function saveTodo(todo) {
                 const user = auth.currentUser;
-                if (!user) return;
+                if (!user) return Promise.reject('Пользователь не авторизован');
                 
-                db.collection('users').doc(user.uid).collection('todos').doc(todo.id).set(todo);
+                return db.collection('users').doc(user.uid).collection('todos').doc(todo.id).set(todo);
             }
             
             function updateTodoInFirebase(id, completed) {
                 const user = auth.currentUser;
                 if (!user) return;
                 
-                db.collection('users').doc(user.uid).collection('todos').doc(id).update({
-                    completed: completed
+                return db.collection('users').doc(user.uid).collection('todos').doc(id).update({
+                    completed: completed,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
             }
             
@@ -2508,10 +2531,15 @@
                 const user = auth.currentUser;
                 if (!user) return;
                 
-                db.collection('users').doc(user.uid).collection('todos').doc(id).delete();
+                return db.collection('users').doc(user.uid).collection('todos').doc(id).delete();
             }
             
             function loadTodos() {
+                // Отписываемся от предыдущей подписки если есть
+                if (todoUnsubscribe) {
+                    todoUnsubscribe();
+                }
+                
                 const user = auth.currentUser;
                 if (!user) {
                     todoList.innerHTML = '<div class="todo-item">Войдите, чтобы видеть задачи</div>';
@@ -2520,10 +2548,14 @@
                 
                 const dateKey = getDateKey(currentTaskDate);
                 
-                db.collection('users').doc(user.uid).collection('todos')
+                console.log('Загрузка задач для даты:', dateKey);
+                
+                todoUnsubscribe = db.collection('users').doc(user.uid).collection('todos')
                     .where('date', '==', dateKey)
                     .orderBy('createdAt', 'desc')
                     .onSnapshot((snapshot) => {
+                        console.log('Получены задачи:', snapshot.size);
+                        
                         todoList.innerHTML = '';
                         completedTasksCount = 0;
                         
@@ -2534,6 +2566,7 @@
                         
                         snapshot.forEach((doc) => {
                             const todo = doc.data();
+                            console.log('Задача:', todo);
                             addTodoToDOM(todo);
                             
                             if (todo.completed) {
@@ -2542,6 +2575,9 @@
                         });
                         
                         completedTasks.textContent = completedTasksCount;
+                    }, (error) => {
+                        console.error('Ошибка загрузки задач:', error);
+                        todoList.innerHTML = '<div class="todo-item">Ошибка загрузки задач</div>';
                     });
             }
             
@@ -2723,7 +2759,7 @@
                     `;
                     
                     loadUserData();
-                    loadTodos();
+                    loadTodos(); // Загружаем задачи при входе
                     loadAlarms();
                     
                 } else {
@@ -2734,6 +2770,11 @@
                     `;
                     
                     document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                    
+                    // Очищаем задачи при выходе
+                    todoList.innerHTML = '<div class="todo-item">Войдите, чтобы видеть задачи</div>';
+                    completedTasksCount = 0;
+                    completedTasks.textContent = '0';
                 }
             }
             
