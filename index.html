@@ -228,6 +228,26 @@
             transform: scale(1.05);
         }
         
+        /* СЕРВИСЫ КАК ОТДЕЛЬНЫЕ КНОПКИ */
+        .service-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .service-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
         h1 {
             font-size: 1.8rem;
             color: #1DB954;
@@ -440,6 +460,28 @@
         
         input:checked + .alarm-slider:before {
             transform: translateX(24px);
+        }
+        
+        .alarm-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .delete-alarm-btn {
+            background: transparent;
+            border: none;
+            color: #FF6B6B;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        
+        .delete-alarm-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: scale(1.1);
         }
         
         .add-alarm-btn {
@@ -1079,102 +1121,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        /* МЕНЮ СЕРВИСОВ */
-        .services-menu {
-            position: relative;
-        }
-        
-        .services-btn {
-            background: rgba(40, 40, 40, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .services-btn:hover {
-            background: rgba(29, 185, 84, 0.3);
-            transform: scale(1.05);
-        }
-        
-        .services-dropdown {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: rgba(40, 40, 40, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 15px;
-            margin-top: 8px;
-            min-width: 200px;
-            z-index: 1000;
-            display: none;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-        }
-        
-        .services-dropdown.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-        
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-        
-        .service-item {
-            background: rgba(60, 60, 60, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 12px 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            text-align: center;
-            height: 80px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        
-        .service-item:hover {
-            background: rgba(29, 185, 84, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .service-item.active {
-            background: rgba(29, 185, 84, 0.3);
-            border-color: #1DB954;
-            box-shadow: 0 0 10px rgba(29, 185, 84, 0.4);
-        }
-        
-        .service-icon {
-            font-size: 1.3rem;
-            margin-bottom: 3px;
-        }
-        
-        .service-name {
-            font-size: 0.65rem;
-            font-weight: bold;
-            line-height: 1.2;
-        }
-        
-        .service-desc {
-            font-size: 0.55rem;
-            color: #B3B3B3;
-            line-height: 1.1;
-        }
-        
         .chat-toggle-btn {
             background: rgba(29, 185, 84, 0.3);
             border: 1px solid #1DB954;
@@ -1350,6 +1296,206 @@
             cursor: not-allowed;
         }
         
+        /* ОКНО ЭМОДЗИ С ОБЫЧНЫМИ СМАЙЛАМИ */
+        .emoji-picker {
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            width: 300px;
+            z-index: 100;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        .emoji-picker.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .emoji-search {
+            width: 100%;
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        
+        .emoji-search:focus {
+            border-color: #1DB954;
+        }
+        
+        .emoji-categories {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 5px;
+        }
+        
+        .emoji-category {
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        
+        .emoji-category:hover, .emoji-category.active {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+        }
+        
+        .emoji-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .emoji-grid::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .emoji-grid::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 2px;
+        }
+        
+        .emoji-item {
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .emoji-item:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Окно поиска GIF */
+        .gif-picker {
+            position: absolute;
+            bottom: 45px;
+            left: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            width: 300px;
+            height: 350px;
+            display: none;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .gif-picker.show {
+            display: flex;
+        }
+        
+        .gif-search {
+            width: 100%;
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            outline: none;
+            margin-bottom: 10px;
+        }
+        
+        .gif-search:focus {
+            border-color: #1DB954;
+        }
+        
+        .gif-trending {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .gif-trending-btn {
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #B3B3B3;
+            padding: 4px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.2s ease;
+        }
+        
+        .gif-trending-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: white;
+        }
+        
+        .gif-results {
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5px;
+        }
+        
+        .gif-results::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .gif-results::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .gif-results::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 2px;
+        }
+        
+        .gif-item {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .gif-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.5);
+        }
+        
         .crt-effect {
             position: relative;
             overflow: hidden;
@@ -1416,8 +1562,14 @@
                 font-size: 1.5rem;
             }
             
-            .services-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .service-btn {
+                font-size: 0.7rem;
+                padding: 4px 8px;
+            }
+            
+            .emoji-picker, .gif-picker {
+                width: 250px;
+                left: -50px;
             }
         }
 
@@ -1535,31 +1687,13 @@
                     <h1>Deynik Focus</h1>
                 </div>
                 <div class="header-right">
-                    <!-- МЕНЮ СЕРВИСОВ -->
-                    <div class="services-menu">
-                        <button class="services-btn" id="services-btn">
-                            <i class="fas fa-th"></i> Сервисы
-                        </button>
-                        <div class="services-dropdown" id="services-dropdown">
-                            <div class="services-grid">
-                                <div class="service-item active">
-                                    <div class="service-icon">⏱️</div>
-                                    <div class="service-name">Focus</div>
-                                    <div class="service-desc">Таймер</div>
-                                </div>
-                                <div class="service-item" onclick="window.open('https://deyniik.github.io/DeynikRadio/', '_blank')">
-                                    <div class="service-icon">📻</div>
-                                    <div class="service-name">Radio</div>
-                                    <div class="service-desc">Музыка</div>
-                                </div>
-                                <div class="service-item" onclick="window.open('https://deyniik.github.io/Messenger/', '_blank')">
-                                    <div class="service-icon">💬</div>
-                                    <div class="service-name">Messenger</div>
-                                    <div class="service-desc">Общение</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- ОТДЕЛЬНЫЕ КНОПКИ СЕРВИСОВ -->
+                    <button class="service-btn" onclick="window.open('https://deyniik.github.io/DeynikRadio/', '_blank')">
+                        <i class="fas fa-radio"></i> Radio
+                    </button>
+                    <button class="service-btn" onclick="window.open('https://deyniik.github.io/Messenger/', '_blank')">
+                        <i class="fas fa-comments"></i> Messenger
+                    </button>
                 </div>
             </header>
             
@@ -1583,12 +1717,6 @@
                     <!-- БУДИЛЬНИК -->
                     <div class="alarm-container" id="alarm-mode">
                         <div class="time-display" id="current-time">--:--</div>
-                        
-                        <div class="alarm-controls">
-                            <button class="alarm-btn" id="add-alarm-btn">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
                         
                         <div class="alarms-list" id="alarms-list">
                             <!-- Будильники будут здесь -->
@@ -1684,7 +1812,18 @@
                 
                 <!-- Центральная панель: Задачи -->
                 <div class="side-panel crt-effect">
-                    <h2>Задачи</h2>
+                    <div class="tasks-header">
+                        <h2>Задачи</h2>
+                        <div class="tasks-date-nav">
+                            <button class="date-nav-btn" id="date-prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <div class="date-display-tasks" id="date-display-tasks">Пн, 1</div>
+                            <button class="date-nav-btn" id="date-next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div class="todo-input-container">
                         <input type="text" class="todo-input" id="todo-input" 
                                placeholder="Что нужно сделать?" maxlength="100">
@@ -1708,10 +1847,6 @@
                         <div class="stat-item">
                             <span>Завершено задач:</span>
                             <span id="completed-tasks">0</span>
-                        </div>
-                        <div class="stat-item">
-                            <span>Всего таймеров:</span>
-                            <span id="total-pomodoros">0</span>
                         </div>
                     </div>
                     
@@ -1751,6 +1886,34 @@
                             <button class="chat-send-btn" id="chat-send-btn" disabled>
                                 <i class="fas fa-paper-plane"></i>
                             </button>
+                            
+                            <!-- ОКНО ЭМОДЗИ С ПОИСКОМ -->
+                            <div class="emoji-picker" id="emoji-picker">
+                                <input type="text" class="emoji-search" id="emoji-search" placeholder="Поиск эмодзи...">
+                                <div class="emoji-categories">
+                                    <button class="emoji-category active" data-category="all">Все</button>
+                                    <button class="emoji-category" data-category="smileys">😀</button>
+                                    <button class="emoji-category" data-category="hearts">❤️</button>
+                                    <button class="emoji-category" data-category="objects">🔔</button>
+                                </div>
+                                <div class="emoji-grid" id="emoji-grid">
+                                    <!-- Эмодзи будут добавлены через JavaScript -->
+                                </div>
+                            </div>
+                            
+                            <!-- ОКНО ПОИСКА GIF -->
+                            <div class="gif-picker" id="gif-picker">
+                                <input type="text" class="gif-search" id="gif-search" placeholder="Поиск GIF...">
+                                <div class="gif-trending">
+                                    <button class="gif-trending-btn" data-term="funny">Смешные</button>
+                                    <button class="gif-trending-btn" data-term="music">Музыка</button>
+                                    <button class="gif-trending-btn" data-term="dance">Танцы</button>
+                                    <button class="gif-trending-btn" data-term="love">Любовь</button>
+                                </div>
+                                <div class="gif-results" id="gif-results">
+                                    <!-- GIF будут добавлены через JavaScript -->
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1801,7 +1964,15 @@
             }
         };
 
-        // ЗВУКИ БУДИЛЬНИКА
+        // Эмодзи для поиска
+        const emojiCategories = {
+            all: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            smileys: ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚", "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩", "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣", "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬", "🤯", "😳", "🥵", "🥶", "😱", "😨", "😰", "😥", "😓", "🤗", "🤔", "🤭", "🤫", "🤥", "😶", "😐", "😑", "😬", "🙄", "😯", "😦", "😧", "😮", "😲", "🥱", "😴", "🤤", "😪", "😵", "🤐", "🥴", "🤢", "🤮", "🤧", "😷", "🤒", "🤕", "🤑", "🤠", "😈", "👿", "👹", "👺", "🤡", "💩", "👻", "💀", "☠️", "👽", "👾", "🤖", "🎃"],
+            hearts: ["❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "🤍", "🤎", "💔", "❣️", "💕", "💞", "💓", "💗", "💖", "💘", "💝", "💟"],
+            objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
+        };
+
+        // ЗВУКИ БУДИЛЬНИКА - ВСЕ РАБОЧИЕ
         const alarmSounds = {
             classic: {
                 name: "Классический",
@@ -1848,11 +2019,142 @@
                         oscillator.stop(audioContext.currentTime + time + 0.8);
                     });
                 }
+            },
+            digital: {
+                name: "Цифровой",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 1000;
+                    oscillator.type = 'square';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                    
+                    setTimeout(() => {
+                        const oscillator2 = audioContext.createOscillator();
+                        const gainNode2 = audioContext.createGain();
+                        
+                        oscillator2.connect(gainNode2);
+                        gainNode2.connect(audioContext.destination);
+                        
+                        oscillator2.frequency.value = 1200;
+                        oscillator2.type = 'square';
+                        
+                        gainNode2.gain.setValueAtTime(0.2, audioContext.currentTime + 0.6);
+                        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.1);
+                        
+                        oscillator2.start(audioContext.currentTime + 0.6);
+                        oscillator2.stop(audioContext.currentTime + 1.1);
+                    }, 600);
+                }
+            },
+            nature: {
+                name: "Природа",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // Пение птиц
+                    for (let i = 0; i < 3; i++) {
+                        setTimeout(() => {
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            
+                            oscillator.frequency.value = 1200 + Math.random() * 800;
+                            oscillator.type = 'sine';
+                            
+                            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                            
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.3);
+                        }, i * 400);
+                    }
+                }
+            },
+            melody: {
+                name: "Мелодия",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const melody = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
+                    
+                    melody.forEach((freq, index) => {
+                        setTimeout(() => {
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            
+                            oscillator.frequency.value = freq;
+                            oscillator.type = 'sine';
+                            
+                            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                            
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.3);
+                        }, index * 200);
+                    });
+                }
+            },
+            epic: {
+                name: "Эпический",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    
+                    // Низкий тон для эпичности
+                    const oscillator1 = audioContext.createOscillator();
+                    const gainNode1 = audioContext.createGain();
+                    
+                    oscillator1.connect(gainNode1);
+                    gainNode1.connect(audioContext.destination);
+                    
+                    oscillator1.frequency.value = 110;
+                    oscillator1.type = 'sawtooth';
+                    
+                    gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+                    
+                    oscillator1.start(audioContext.currentTime);
+                    oscillator1.stop(audioContext.currentTime + 1.5);
+                    
+                    // Высокий тон
+                    setTimeout(() => {
+                        const oscillator2 = audioContext.createOscillator();
+                        const gainNode2 = audioContext.createGain();
+                        
+                        oscillator2.connect(gainNode2);
+                        gainNode2.connect(audioContext.destination);
+                        
+                        oscillator2.frequency.value = 880;
+                        oscillator2.type = 'sine';
+                        
+                        gainNode2.gain.setValueAtTime(0.2, audioContext.currentTime + 0.3);
+                        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.2);
+                        
+                        oscillator2.start(audioContext.currentTime + 0.3);
+                        oscillator2.stop(audioContext.currentTime + 1.2);
+                    }, 300);
+                }
             }
         };
 
         // Дни недели на русском
-        const daysOfWeek = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        const daysOfWeek = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
 
         // ПРОСТОЙ И РАБОЧИЙ ВАРИАНТ ЗАГРУЗКИ
         window.onload = function() {
@@ -1900,9 +2202,6 @@
             const todoList = document.getElementById('todo-list');
             const todayPomodoros = document.getElementById('today-pomodoros');
             const completedTasks = document.getElementById('completed-tasks');
-            const totalPomodoros = document.getElementById('total-pomodoros');
-            const servicesBtn = document.getElementById('services-btn');
-            const servicesDropdown = document.getElementById('services-dropdown');
             const notification = document.getElementById('notification');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const chatToggleBtn = document.getElementById('chat-toggle-btn');
@@ -1910,7 +2209,6 @@
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const chatSendBtn = document.getElementById('chat-send-btn');
-            const addAlarmBtn = document.getElementById('add-alarm-btn');
             const addAlarmFullBtn = document.getElementById('add-alarm-full-btn');
             const alarmModal = document.getElementById('alarmModal');
             const closeAlarmModal = document.getElementById('closeAlarmModal');
@@ -1919,6 +2217,19 @@
             const alarmHours = document.getElementById('alarm-hours');
             const alarmMinutes = document.getElementById('alarm-minutes');
             const alarmsList = document.getElementById('alarms-list');
+            const datePrev = document.getElementById('date-prev');
+            const dateNext = document.getElementById('date-next');
+            const dateDisplayTasks = document.getElementById('date-display-tasks');
+            const emojiBtn = document.getElementById('emoji-btn');
+            const gifBtn = document.getElementById('gif-btn');
+            const emojiPicker = document.getElementById('emoji-picker');
+            const gifPicker = document.getElementById('gif-picker');
+            const emojiSearch = document.getElementById('emoji-search');
+            const gifSearch = document.getElementById('gif-search');
+            const emojiGrid = document.getElementById('emoji-grid');
+            const gifResults = document.getElementById('gif-results');
+            const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
+            const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
             
             // Переменные приложения
             let currentMode = 0; // 0-будильник, 1-таймер, 2-секундомер
@@ -1930,7 +2241,6 @@
             let stopwatchRunning = false;
             let stopwatchInterval;
             let laps = [];
-            let totalPomodoroCount = 0;
             let todayPomodoroCount = 0;
             let completedTasksCount = 0;
             let currentAudio = null;
@@ -1940,6 +2250,7 @@
             let isChatOpen = false;
             let alarms = [];
             let alarmCheckInterval = null;
+            let currentDate = new Date();
             
             // Инициализация
             updateClock();
@@ -1951,6 +2262,9 @@
             loadChatHistory();
             loadAlarms();
             startAlarmChecker();
+            updateDateDisplay();
+            loadEmojis();
+            loadTrendingGifs();
             
             // Функция показа уведомления
             function showNotification(message, type = 'info') {
@@ -2043,17 +2357,22 @@
                         <div class="alarm-time">${formattedTime}</div>
                         <div class="alarm-label">Будильник</div>
                     </div>
-                    <label class="alarm-switch">
-                        <input type="checkbox" ${alarm.enabled ? 'checked' : ''}>
-                        <span class="alarm-slider"></span>
-                    </label>
+                    <div class="alarm-actions">
+                        <label class="alarm-switch">
+                            <input type="checkbox" ${alarm.enabled ? 'checked' : ''}>
+                            <span class="alarm-slider"></span>
+                        </label>
+                        <button class="delete-alarm-btn" title="Удалить будильник">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 `;
                 
                 const switchInput = alarmElement.querySelector('input');
                 switchInput.addEventListener('change', () => toggleAlarm(alarm.id, switchInput.checked));
                 
-                // Двойной клик для удаления
-                alarmElement.addEventListener('dblclick', () => deleteAlarm(alarm.id));
+                const deleteBtn = alarmElement.querySelector('.delete-alarm-btn');
+                deleteBtn.addEventListener('click', () => deleteAlarm(alarm.id));
                 
                 alarmsList.appendChild(alarmElement);
             }
@@ -2184,7 +2503,6 @@
             
             function timerComplete() {
                 playAlarmSound();
-                totalPomodoroCount++;
                 todayPomodoroCount++;
                 updateStats();
                 saveUserData();
@@ -2346,10 +2664,6 @@
             });
             
             // МОДАЛЬНОЕ ОКНО БУДИЛЬНИКА
-            addAlarmBtn.addEventListener('click', function() {
-                alarmModal.style.display = 'block';
-            });
-            
             addAlarmFullBtn.addEventListener('click', function() {
                 alarmModal.style.display = 'block';
             });
@@ -2383,7 +2697,19 @@
                 }
             });
             
-            // ЗАДАЧИ
+            // ЗАДАЧИ С ПЕРЕКЛЮЧАТЕЛЕМ ДАТ
+            function updateDateDisplay() {
+                const dayOfWeek = daysOfWeek[currentDate.getDay()];
+                const dayOfMonth = currentDate.getDate();
+                dateDisplayTasks.textContent = `${dayOfWeek}, ${dayOfMonth}`;
+            }
+            
+            function changeDate(direction) {
+                currentDate.setDate(currentDate.getDate() + direction);
+                updateDateDisplay();
+                loadTodos();
+            }
+            
             function addTodo() {
                 const text = todoInput.value.trim();
                 if (text === '') return;
@@ -2392,7 +2718,8 @@
                     id: Date.now().toString(),
                     text: text,
                     completed: false,
-                    createdAt: new Date()
+                    createdAt: new Date(),
+                    date: currentDate.toISOString().split('T')[0] // YYYY-MM-DD
                 };
                 
                 // Добавление в DOM
@@ -2492,14 +2819,17 @@
                     return;
                 }
                 
+                const dateString = currentDate.toISOString().split('T')[0];
+                
                 db.collection('users').doc(user.uid).collection('todos')
+                    .where('date', '==', dateString)
                     .orderBy('createdAt', 'desc')
                     .onSnapshot((snapshot) => {
                         todoList.innerHTML = '';
                         completedTasksCount = 0;
                         
                         if (snapshot.empty) {
-                            todoList.innerHTML = '<div class="todo-item">Задач пока нет</div>';
+                            todoList.innerHTML = '<div class="todo-item">Задач на этот день нет</div>';
                             return;
                         }
                         
@@ -2522,7 +2852,6 @@
                 if (!user) return;
                 
                 const userData = {
-                    totalPomodoros: totalPomodoroCount,
                     todayPomodoros: todayPomodoroCount,
                     lastUpdated: new Date(),
                     alarmSound: currentAlarmSound
@@ -2538,7 +2867,6 @@
                 db.collection('users').doc(user.uid).get().then((doc) => {
                     if (doc.exists) {
                         const data = doc.data();
-                        totalPomodoroCount = data.totalPomodoros || 0;
                         todayPomodoroCount = data.todayPomodoros || 0;
                         currentAlarmSound = data.alarmSound || 'classic';
                         
@@ -2559,11 +2887,10 @@
             
             function updateStats() {
                 todayPomodoros.textContent = todayPomodoroCount;
-                totalPomodoros.textContent = totalPomodoroCount;
                 completedTasks.textContent = completedTasksCount;
             }
             
-            // ЧАТ
+            // ЧАТ С ЭМОДЗИ И GIF
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
                 
@@ -2645,8 +2972,7 @@
                     text: messageText,
                     userName: displayName,
                     userId: user.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                    reactions: {}
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
                 
                 chatSendBtn.disabled = true;
@@ -2663,6 +2989,8 @@
                     .finally(() => {
                         chatSendBtn.disabled = false;
                         chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    emojiPicker.classList.remove('show');
+                        gifPicker.classList.remove('show');
                     });
             }
             
@@ -2676,6 +3004,150 @@
                 } else {
                     chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i> Открыть чат';
                 }
+            }
+            
+            // ЭМОДЗИ И GIF ФУНКЦИОНАЛЬНОСТЬ
+            function loadEmojis() {
+                emojiGrid.innerHTML = '';
+                emojiCategories.all.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji-item';
+                    emojiElement.textContent = emoji;
+                    emojiElement.addEventListener('click', function() {
+                        insertEmoji(emoji);
+                        emojiPicker.classList.remove('show');
+                    });
+                    emojiGrid.appendChild(emojiElement);
+                });
+            }
+            
+            function filterEmojisByCategory(category) {
+                emojiGrid.innerHTML = '';
+                const emojis = category === 'all' ? emojiCategories.all : emojiCategories[category];
+                
+                emojis.forEach(emoji => {
+                    const emojiElement = document.createElement('div');
+                    emojiElement.className = 'emoji-item';
+                    emojiElement.textContent = emoji;
+                    emojiElement.addEventListener('click', function() {
+                        insertEmoji(emoji);
+                        emojiPicker.classList.remove('show');
+                    });
+                    emojiGrid.appendChild(emojiElement);
+                });
+            }
+            
+            function filterEmojis() {
+                const searchTerm = emojiSearch.value.toLowerCase();
+                const currentCategory = document.querySelector('.emoji-category.active').dataset.category;
+                const emojis = currentCategory === 'all' ? emojiCategories.all : emojiCategories[currentCategory];
+                
+                emojiGrid.innerHTML = '';
+                
+                emojis.forEach(emoji => {
+                    if (searchTerm === '' || emoji.includes(searchTerm)) {
+                        const emojiElement = document.createElement('div');
+                        emojiElement.className = 'emoji-item';
+                        emojiElement.textContent = emoji;
+                        emojiElement.addEventListener('click', function() {
+                            insertEmoji(emoji);
+                            emojiPicker.classList.remove('show');
+                        });
+                        emojiGrid.appendChild(emojiElement);
+                    }
+                });
+            }
+            
+            function insertEmoji(emoji) {
+                chatInput.value += emoji;
+                chatInput.focus();
+            }
+            
+            function loadTrendingGifs() {
+                // Статические GIF для демонстрации
+                const trendingGifs = [
+                    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
+                    'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
+                    'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif',
+                    'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif',
+                    'https://media.giphy.com/media/3o7abGQa0aRsohveX6/giphy.gif',
+                    'https://media.giphy.com/media/3o7TKM1Fa6k5g2qsxq/giphy.gif'
+                ];
+                
+                gifResults.innerHTML = '';
+                trendingGifs.forEach(gifUrl => {
+                    const gifElement = document.createElement('img');
+                    gifElement.className = 'gif-item';
+                    gifElement.src = gifUrl;
+                    gifElement.addEventListener('click', function() {
+                        sendGifMessage(gifUrl);
+                        gifPicker.classList.remove('show');
+                    });
+                    gifResults.appendChild(gifElement);
+                });
+            }
+            
+            async function searchGifs(term = null) {
+                const searchTerm = term || gifSearch.value;
+                if (!searchTerm) {
+                    loadTrendingGifs();
+                    return;
+                }
+                
+                const apiKey = 'LIVDSRZULELA'; // Бесплатный публичный ключ Tenor
+                const limit = 20;
+                
+                try {
+                    const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(searchTerm)}&key=${apiKey}&limit=${limit}`);
+                    const data = await response.json();
+                    
+                    gifResults.innerHTML = '';
+                    
+                    data.results.forEach(result => {
+                        const gifUrl = result.media[0].gif.url;
+                        const gifElement = document.createElement('img');
+                        gifElement.className = 'gif-item';
+                        gifElement.src = gifUrl;
+                        gifElement.addEventListener('click', function() {
+                            sendGifMessage(gifUrl);
+                            gifPicker.classList.remove('show');
+                        });
+                        gifResults.appendChild(gifElement);
+                    });
+                } catch (error) {
+                    console.error('Ошибка поиска GIF:', error);
+                    // Fallback на статические GIF
+                    loadTrendingGifs();
+                }
+            }
+            
+            function sendGifMessage(gifUrl) {
+                const user = auth.currentUser;
+                if (!user) {
+                    alert('Войдите в систему, чтобы отправлять сообщения');
+                    return;
+                }
+                
+                const displayName = user.displayName || 'Пользователь';
+                
+                const message = {
+                    gif: gifUrl,
+                    userName: displayName,
+                    userId: user.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                db.collection('chat').add(message)
+                    .then(() => {
+                        // GIF отправлен
+                    })
+                    .finally(() => {
+                        chatSendBtn.disabled = false;
+                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    });
             }
             
             // АУТЕНТИФИКАЦИЯ
@@ -2720,6 +3192,8 @@
             timerBtn.addEventListener('click', toggleTimer);
             stopwatchBtn.addEventListener('click', toggleStopwatch);
             resetBtn.addEventListener('click', resetStopwatch);
+            datePrev.addEventListener('click', () => changeDate(-1));
+            dateNext.addEventListener('click', () => changeDate(1));
             
             // Таймер - управление временем
             minutesIncrease.addEventListener('click', function() {
@@ -2812,20 +3286,6 @@
                 if (e.key === 'Enter') addTodo();
             });
             
-            // Меню сервисов
-            servicesBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                servicesDropdown.classList.toggle('show');
-            });
-            
-            document.addEventListener('click', function() {
-                servicesDropdown.classList.remove('show');
-            });
-            
-            servicesDropdown.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-            
             // Чат
             chatToggleBtn.addEventListener('click', toggleChat);
             chatInput.addEventListener('input', function() {
@@ -2835,6 +3295,58 @@
                 if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
             });
             chatSendBtn.addEventListener('click', sendMessage);
+            
+            // Эмодзи и GIF
+            emojiBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                emojiPicker.classList.toggle('show');
+                gifPicker.classList.remove('show');
+            });
+            
+            gifBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                gifPicker.classList.toggle('show');
+                emojiPicker.classList.remove('show');
+            });
+            
+            emojiSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
+                filterEmojis();
+            });
+            
+            emojiCategoryBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    emojiCategoryBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    filterEmojisByCategory(this.dataset.category);
+                });
+            });
+            
+            gifSearch.addEventListener('input', function(e) {
+                e.stopPropagation();
+                searchGifs();
+            });
+            
+            gifTrendingBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    searchGifs(this.dataset.term);
+                });
+            });
+            
+            document.addEventListener('click', function() {
+                emojiPicker.classList.remove('show');
+                gifPicker.classList.remove('show');
+            });
+            
+            emojiPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+            
+            gifPicker.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
             
             // Слушатель аутентификации
             auth.onAuthStateChanged(updateAuthUI);
