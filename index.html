@@ -2031,7 +2031,7 @@
             objects: ["🔔", "🎵", "🎶", "🎼", "🎧", "🎤", "🎷", "🎸", "🎹", "🎺", "🎻", "🥁", "📻", "📱", "💻", "🖥️", "🖨️", "🎥", "📹", "📼", "🔍", "🔎", "💡", "📔", "📒", "📕", "📗", "📘", "📙", "📚", "📖", "🔖", "🎯", "🧩", "🚀", "⭐", "🌟", "🎁", "🎉", "🎊", "🎈", "🎂", "🍰", "🧁", "🥧", "🍦", "🍨", "🍩", "🍪", "🎀", "🎗️", "🎟️", "🎫", "🏆", "🏅", "🥇", "🥈", "🥉", "⚽", "🏀", "🏈", "⚾", "🥎", "🎾", "🏐", "🏉", "🥏", "🎱", "🪀", "🏓", "🏸", "🏒", "🏑", "🥍", "🏏", "🎿", "⛷️", "🏂", "🪂", "🏋️", "🤼", "🤸", "⛹️", "🤾", "🏌️", "🏇", "🧘"]
         };
 
-        // ЗВУКИ БУДИЛЬНИКА - ВСЕ РАБОЧИЕ
+        // ЗВУКИ БУДИЛЬНИКА
         const alarmSounds = {
             classic: {
                 name: "Классический",
@@ -2115,100 +2115,6 @@
                         oscillator2.stop(audioContext.currentTime + 1.1);
                     }, 600);
                 }
-            },
-            nature: {
-                name: "Природа",
-                createSound: function() {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
-                    // Пение птиц
-                    for (let i = 0; i < 3; i++) {
-                        setTimeout(() => {
-                            const oscillator = audioContext.createOscillator();
-                            const gainNode = audioContext.createGain();
-                            
-                            oscillator.connect(gainNode);
-                            gainNode.connect(audioContext.destination);
-                            
-                            oscillator.frequency.value = 1200 + Math.random() * 800;
-                            oscillator.type = 'sine';
-                            
-                            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                            
-                            oscillator.start(audioContext.currentTime);
-                            oscillator.stop(audioContext.currentTime + 0.3);
-                        }, i * 400);
-                    }
-                }
-            },
-            melody: {
-                name: "Мелодия",
-                createSound: function() {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const melody = [523.25, 587.33, 659.25, 698.46, 783.99, 880.00, 987.77, 1046.50];
-                    
-                    melody.forEach((freq, index) => {
-                        setTimeout(() => {
-                            const oscillator = audioContext.createOscillator();
-                            const gainNode = audioContext.createGain();
-                            
-                            oscillator.connect(gainNode);
-                            gainNode.connect(audioContext.destination);
-                            
-                            oscillator.frequency.value = freq;
-                            oscillator.type = 'sine';
-                            
-                            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                            
-                            oscillator.start(audioContext.currentTime);
-                            oscillator.stop(audioContext.currentTime + 0.3);
-                        }, index * 200);
-                    });
-                }
-            },
-            epic: {
-                name: "Эпический",
-                createSound: function() {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    
-                    // Низкий тон для эпичности
-                    const oscillator1 = audioContext.createOscillator();
-                    const gainNode1 = audioContext.createGain();
-                    
-                    oscillator1.connect(gainNode1);
-                    gainNode1.connect(audioContext.destination);
-                    
-                    oscillator1.frequency.value = 110;
-                    oscillator1.type = 'sawtooth';
-                    
-                    gainNode1.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode1.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-                    
-                    oscillator1.start(audioContext.currentTime);
-                    oscillator1.stop(audioContext.currentTime + 1.5);
-                    
-                    // Высокий тон
-                    setTimeout(() => {
-                        const oscillator2 = audioContext.createOscillator();
-                        const gainNode2 = audioContext.createGain();
-                        
-                        oscillator2.connect(gainNode2);
-                        gainNode2.connect(audioContext.destination);
-                        
-                        oscillator2.frequency.value = 880;
-                        oscillator2.type = 'sine';
-                        
-                        gainNode2.gain.setValueAtTime(0.2, audioContext.currentTime + 0.3);
-                        gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.2);
-                        
-                        oscillator2.start(audioContext.currentTime + 0.3);
-                        oscillator2.stop(audioContext.currentTime + 1.2);
-                    }, 300);
-                }
             }
         };
 
@@ -2279,16 +2185,6 @@
             const datePrev = document.getElementById('date-prev');
             const dateNext = document.getElementById('date-next');
             const dateDisplayTasks = document.getElementById('date-display-tasks');
-            const emojiBtn = document.getElementById('emoji-btn');
-            const gifBtn = document.getElementById('gif-btn');
-            const emojiPicker = document.getElementById('emoji-picker');
-            const gifPicker = document.getElementById('gif-picker');
-            const emojiSearch = document.getElementById('emoji-search');
-            const gifSearch = document.getElementById('gif-search');
-            const emojiGrid = document.getElementById('emoji-grid');
-            const gifResults = document.getElementById('gif-results');
-            const emojiCategoryBtns = document.querySelectorAll('.emoji-category');
-            const gifTrendingBtns = document.querySelectorAll('.gif-trending-btn');
             
             // Переменные приложения
             let currentMode = 0; // 0-будильник, 1-таймер, 2-секундомер
@@ -2322,8 +2218,6 @@
             loadAlarms();
             startAlarmChecker();
             updateDateDisplay();
-            loadEmojis();
-            loadTrendingGifs();
             
             // Функция показа уведомления
             function showNotification(message, type = 'info') {
@@ -2350,9 +2244,6 @@
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                 currentTime.textContent = timeString;
-                
-                // Проверка будильников
-                checkAlarms(now);
             }
             
             // Переключение режимов
@@ -2379,7 +2270,7 @@
                 }
             }
             
-            // БУДИЛЬНИКИ - С ПРАВИЛЬНОЙ СОРТИРОВКОЙ
+            // БУДИЛЬНИКИ
             function loadAlarms() {
                 const user = auth.currentUser;
                 if (!user) return;
@@ -2390,21 +2281,9 @@
                         alarms = [];
                         alarmsList.innerHTML = '';
                         
-                        // Сначала собираем все будильники
                         snapshot.forEach((doc) => {
                             const alarm = { id: doc.id, ...doc.data() };
                             alarms.push(alarm);
-                        });
-                        
-                        // Сортируем: сначала включенные, потом выключенные
-                        alarms.sort((a, b) => {
-                            if (a.enabled && !b.enabled) return -1;
-                            if (!a.enabled && b.enabled) return 1;
-                            return a.time.localeCompare(b.time);
-                        });
-                        
-                        // Добавляем в DOM
-                        alarms.forEach(alarm => {
                             addAlarmToDOM(alarm);
                         });
                         
@@ -2455,8 +2334,6 @@
                 db.collection('users').doc(user.uid).collection('alarms').doc(alarmId).update({
                     enabled: enabled
                 });
-                
-                showNotification(enabled ? 'Будильник включен' : 'Будильник выключен', 'info');
             }
             
             function deleteAlarm(alarmId) {
@@ -2465,7 +2342,6 @@
                 
                 if (confirm('Удалить этот будильник?')) {
                     db.collection('users').doc(user.uid).collection('alarms').doc(alarmId).delete();
-                    showNotification('Будильник удален', 'info');
                 }
             }
             
@@ -2495,23 +2371,18 @@
                     });
             }
             
-            function checkAlarms(now) {
-                const currentTime = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                
-                alarms.forEach(alarm => {
-                    if (alarm.enabled && alarm.time === currentTime) {
-                        playAlarmSound();
-                        showNotification('⏰ Время будильника!', 'success');
-                        
-                        // Отключаем будильник после срабатывания
-                        toggleAlarm(alarm.id, false);
-                    }
-                });
-            }
-            
             function startAlarmChecker() {
                 alarmCheckInterval = setInterval(() => {
-                    checkAlarms(new Date());
+                    const now = new Date();
+                    const currentTime = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                    
+                    alarms.forEach(alarm => {
+                        if (alarm.enabled && alarm.time === currentTime) {
+                            playAlarmSound();
+                            showNotification('⏰ Время будильника!', 'success');
+                            toggleAlarm(alarm.id, false);
+                        }
+                    });
                 }, 1000);
             }
             
@@ -2524,13 +2395,10 @@
             
             function toggleTimer() {
                 if (isTimerRunning) {
-                    // Пауза
                     clearInterval(timer);
                     isTimerRunning = false;
                     timerBtn.innerHTML = '<i class="fas fa-play"></i>';
-                    showNotification('Таймер на паузе', 'info');
                 } else {
-                    // Запуск
                     if (timerTimeLeft <= 0) {
                         showNotification('Установите время больше 0', 'error');
                         return;
@@ -2591,12 +2459,10 @@
             
             function toggleStopwatch() {
                 if (stopwatchRunning) {
-                    // Пауза
                     clearInterval(stopwatchInterval);
                     stopwatchRunning = false;
                     stopwatchBtn.innerHTML = '<i class="fas fa-play"></i>';
                 } else {
-                    // Запуск
                     stopwatchRunning = true;
                     stopwatchBtn.innerHTML = '<i class="fas fa-pause"></i>';
                     const startTime = Date.now() - stopwatchTime;
@@ -2768,7 +2634,7 @@
                 }
             });
             
-            // ЗАДАЧИ С ПРАВИЛЬНЫМ СОХРАНЕНИЕМ
+            // ЗАДАЧИ - ПРОСТАЯ И РАБОЧАЯ РЕАЛИЗАЦИЯ
             function updateDateDisplay() {
                 const dayOfWeek = daysOfWeek[currentDate.getDay()];
                 const dayOfMonth = currentDate.getDate();
@@ -2789,15 +2655,14 @@
                     id: Date.now().toString(),
                     text: text,
                     completed: false,
-                    createdAt: new Date(),
-                    date: currentDate.toISOString().split('T')[0] // YYYY-MM-DD
+                    date: currentDate.toISOString().split('T')[0]
                 };
                 
-                // Добавление в DOM
-                addTodoToDOM(todo);
-                
-                // Сохранение
+                // Сохраняем задачу
                 saveTodo(todo);
+                
+                // Добавляем в DOM
+                addTodoToDOM(todo);
                 
                 // Очистка input
                 todoInput.value = '';
@@ -2822,7 +2687,6 @@
                     </div>
                 `;
                 
-                // Обработчики событий
                 const completeBtn = li.querySelector('.complete-btn');
                 const deleteBtn = li.querySelector('.delete-btn');
                 
@@ -2846,7 +2710,15 @@
                 }
                 
                 completedTasks.textContent = completedTasksCount;
-                updateTodoInFirebase(id, !isCompleted);
+                
+                // Обновляем в хранилище
+                const todos = getTodosFromStorage();
+                const todoIndex = todos.findIndex(todo => todo.id === id);
+                if (todoIndex !== -1) {
+                    todos[todoIndex].completed = !isCompleted;
+                    saveTodosToStorage(todos);
+                }
+                
                 saveUserData();
             }
             
@@ -2854,158 +2726,62 @@
                 const todoItem = document.querySelector(`.todo-item[data-id="${id}"]`);
                 if (todoItem) {
                     todoItem.remove();
-                    deleteTodoFromFirebase(id);
+                    
+                    // Удаляем из хранилища
+                    const todos = getTodosFromStorage();
+                    const updatedTodos = todos.filter(todo => todo.id !== id);
+                    saveTodosToStorage(updatedTodos);
+                    
                     showNotification('Задача удалена', 'info');
                 }
             }
             
-            // УНИФИЦИРОВАННЫЕ ФУНКЦИИ ДЛЯ СОХРАНЕНИЯ
+            // Локальное хранилище для задач
+            function getTodosFromStorage() {
+                try {
+                    return JSON.parse(localStorage.getItem('deynikFocusTodos') || '[]');
+                } catch (e) {
+                    return [];
+                }
+            }
+            
+            function saveTodosToStorage(todos) {
+                localStorage.setItem('deynikFocusTodos', JSON.stringify(todos));
+            }
+            
             function saveTodo(todo) {
-                const user = auth.currentUser;
-                const dateKey = currentDate.toISOString().split('T')[0];
+                const todos = getTodosFromStorage();
+                const existingIndex = todos.findIndex(t => t.id === todo.id);
                 
-                if (user) {
-                    // Сохраняем в Firebase для авторизованных пользователей
-                    db.collection('users').doc(user.uid).collection('todos').doc(todo.id).set(todo)
-                        .catch(error => {
-                            console.error('Ошибка сохранения в Firebase:', error);
-                            // Fallback на localStorage при ошибке
-                            saveTodoToLocalStorage(todo, dateKey);
-                        });
+                if (existingIndex !== -1) {
+                    todos[existingIndex] = todo;
                 } else {
-                    // Сохраняем в localStorage для неавторизованных
-                    saveTodoToLocalStorage(todo, dateKey);
+                    todos.push(todo);
                 }
-            }
-            
-            function saveTodoToLocalStorage(todo, dateKey) {
-                try {
-                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
-                    if (!todos[dateKey]) todos[dateKey] = [];
-                    
-                    // Удаляем старую версию задачи (если есть)
-                    todos[dateKey] = todos[dateKey].filter(t => t.id !== todo.id);
-                    // Добавляем новую
-                    todos[dateKey].push(todo);
-                    
-                    localStorage.setItem('localTodos', JSON.stringify(todos));
-                } catch (error) {
-                    console.error('Ошибка сохранения в localStorage:', error);
-                }
-            }
-            
-            function updateTodoInFirebase(id, completed) {
-                const user = auth.currentUser;
-                const dateKey = currentDate.toISOString().split('T')[0];
                 
-                if (user) {
-                    db.collection('users').doc(user.uid).collection('todos').doc(id).update({
-                        completed: completed
-                    }).catch(error => {
-                        console.error('Ошибка обновления в Firebase:', error);
-                        updateTodoInLocalStorage(id, completed, dateKey);
-                    });
-                } else {
-                    updateTodoInLocalStorage(id, completed, dateKey);
-                }
-            }
-            
-            function updateTodoInLocalStorage(id, completed, dateKey) {
-                try {
-                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
-                    if (todos[dateKey]) {
-                        const todoIndex = todos[dateKey].findIndex(todo => todo.id === id);
-                        if (todoIndex !== -1) {
-                            todos[dateKey][todoIndex].completed = completed;
-                            localStorage.setItem('localTodos', JSON.stringify(todos));
-                        }
-                    }
-                } catch (error) {
-                    console.error('Ошибка обновления в localStorage:', error);
-                }
-            }
-            
-            function deleteTodoFromFirebase(id) {
-                const user = auth.currentUser;
-                const dateKey = currentDate.toISOString().split('T')[0];
-                
-                if (user) {
-                    db.collection('users').doc(user.uid).collection('todos').doc(id).delete()
-                        .catch(error => {
-                            console.error('Ошибка удаления из Firebase:', error);
-                            deleteTodoFromLocalStorage(id, dateKey);
-                        });
-                } else {
-                    deleteTodoFromLocalStorage(id, dateKey);
-                }
-            }
-            
-            function deleteTodoFromLocalStorage(id, dateKey) {
-                try {
-                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
-                    if (todos[dateKey]) {
-                        todos[dateKey] = todos[dateKey].filter(todo => todo.id !== id);
-                        localStorage.setItem('localTodos', JSON.stringify(todos));
-                    }
-                } catch (error) {
-                    console.error('Ошибка удаления из localStorage:', error);
-                }
+                saveTodosToStorage(todos);
             }
             
             function loadTodos() {
-                const user = auth.currentUser;
                 const dateString = currentDate.toISOString().split('T')[0];
+                const todos = getTodosFromStorage();
+                const dateTodos = todos.filter(todo => todo.date === dateString);
                 
                 todoList.innerHTML = '';
                 completedTasksCount = 0;
                 
-                if (!user) {
-                    // Если пользователь не авторизован, загружаем из localStorage
-                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
-                    const dateTodos = todos[dateString] || [];
-                    
-                    if (dateTodos.length === 0) {
-                        todoList.innerHTML = '<div class="todo-item" style="justify-content: center; color: #666;">Задач на этот день нет</div>';
-                        completedTasks.textContent = '0';
-                        return;
-                    }
-                    
+                if (dateTodos.length === 0) {
+                    todoList.innerHTML = '<div class="todo-item" style="justify-content: center; color: #666;">Задач на этот день нет</div>';
+                } else {
                     dateTodos.forEach(todo => {
                         addTodoToDOM(todo);
                         if (todo.completed) {
                             completedTasksCount++;
                         }
                     });
-                    
-                    completedTasks.textContent = completedTasksCount;
-                    return;
                 }
                 
-                // Если пользователь авторизован, загружаем из Firebase
-                db.collection('users').doc(user.uid).collection('todos')
-                    .where('date', '==', dateString)
-                    .orderBy('createdAt', 'desc')
-                    .onSnapshot((snapshot) => {
-                        todoList.innerHTML = '';
-                        completedTasksCount = 0;
-                        
-                        if (snapshot.empty) {
-                            todoList.innerHTML = '<div class="todo-item" style="justify-content: center; color: #666;">Задач на этот день нет</div>';
-                            completedTasks.textContent = '0';
-                            return;
-                        }
-                        
-                        snapshot.forEach((doc) => {
-                            const todo = doc.data();
-                            addTodoToDOM(todo);
-                            
-                            if (todo.completed) {
-                                completedTasksCount++;
-                            }
-                        });
-                        
-                        completedTasks.textContent = completedTasksCount;
-                    });
+                completedTasks.textContent = completedTasksCount;
             }
             
             // ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
@@ -3031,17 +2807,6 @@
                         const data = doc.data();
                         todayPomodoroCount = data.todayPomodoros || 0;
                         currentAlarmSound = data.alarmSound || 'classic';
-                        
-                        const lastUpdated = data.lastUpdated?.toDate();
-                        const today = new Date();
-                        if (lastUpdated && (
-                            lastUpdated.getDate() !== today.getDate() ||
-                            lastUpdated.getMonth() !== today.getMonth() ||
-                            lastUpdated.getFullYear() !== today.getFullYear()
-                        )) {
-                            todayPomodoroCount = 0;
-                        }
-                        
                         updateStats();
                     }
                 });
@@ -3052,7 +2817,7 @@
                 completedTasks.textContent = completedTasksCount;
             }
             
-            // ЧАТ С ЭМОДЗИ И GIF
+            // ЧАТ
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
                 
@@ -3083,9 +2848,6 @@
                         });
                         
                         chatMessages.scrollTop = chatMessages.scrollHeight;
-                    }, (error) => {
-                        console.error('Ошибка загрузки чата:', error);
-                        chatMessages.innerHTML = '<div class="message">Ошибка загрузки чата</div>';
                     });
             }
             
@@ -3099,22 +2861,12 @@
                     timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                 }
                 
-                let messageContent = '';
-                if (message.gif) {
-                    messageContent = `
-                        <span class="message-user">${message.userName || 'Аноним'}:</span>
-                        <img src="${message.gif}" style="max-width: 200px; border-radius: 8px; margin-top: 5px;" alt="GIF">
-                        <span class="message-time">${timeString}</span>
-                    `;
-                } else {
-                    messageContent = `
-                        <span class="message-user">${message.userName || 'Аноним'}:</span>
-                        ${message.text || ''}
-                        <span class="message-time">${timeString}</span>
-                    `;
-                }
+                messageElement.innerHTML = `
+                    <span class="message-user">${message.userName || 'Аноним'}:</span>
+                    ${message.text || ''}
+                    <span class="message-time">${timeString}</span>
+                `;
                 
-                messageElement.innerHTML = messageContent;
                 chatMessages.appendChild(messageElement);
             }
             
@@ -3151,7 +2903,7 @@
                     .finally(() => {
                         chatSendBtn.disabled = false;
                         chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                        emojiPicker.classList.remove('show');
+                    emojiPicker.classList.remove('show');
                         gifPicker.classList.remove('show');
                     });
             }
@@ -3166,150 +2918,6 @@
                 } else {
                     chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i> Открыть чат';
                 }
-            }
-            
-            // ЭМОДЗИ И GIF ФУНКЦИОНАЛЬНОСТЬ
-            function loadEmojis() {
-                emojiGrid.innerHTML = '';
-                emojiCategories.all.forEach(emoji => {
-                    const emojiElement = document.createElement('div');
-                    emojiElement.className = 'emoji-item';
-                    emojiElement.textContent = emoji;
-                    emojiElement.addEventListener('click', function() {
-                        insertEmoji(emoji);
-                        emojiPicker.classList.remove('show');
-                    });
-                    emojiGrid.appendChild(emojiElement);
-                });
-            }
-            
-            function filterEmojisByCategory(category) {
-                emojiGrid.innerHTML = '';
-                const emojis = category === 'all' ? emojiCategories.all : emojiCategories[category];
-                
-                emojis.forEach(emoji => {
-                    const emojiElement = document.createElement('div');
-                    emojiElement.className = 'emoji-item';
-                    emojiElement.textContent = emoji;
-                    emojiElement.addEventListener('click', function() {
-                        insertEmoji(emoji);
-                        emojiPicker.classList.remove('show');
-                    });
-                    emojiGrid.appendChild(emojiElement);
-                });
-            }
-            
-            function filterEmojis() {
-                const searchTerm = emojiSearch.value.toLowerCase();
-                const currentCategory = document.querySelector('.emoji-category.active').dataset.category;
-                const emojis = currentCategory === 'all' ? emojiCategories.all : emojiCategories[currentCategory];
-                
-                emojiGrid.innerHTML = '';
-                
-                emojis.forEach(emoji => {
-                    if (searchTerm === '' || emoji.includes(searchTerm)) {
-                        const emojiElement = document.createElement('div');
-                        emojiElement.className = 'emoji-item';
-                        emojiElement.textContent = emoji;
-                        emojiElement.addEventListener('click', function() {
-                            insertEmoji(emoji);
-                            emojiPicker.classList.remove('show');
-                        });
-                        emojiGrid.appendChild(emojiElement);
-                    }
-                });
-            }
-            
-            function insertEmoji(emoji) {
-                chatInput.value += emoji;
-                chatInput.focus();
-            }
-            
-            function loadTrendingGifs() {
-                // Статические GIF для демонстрации
-                const trendingGifs = [
-                    'https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif',
-                    'https://media.giphy.com/media/3o7aD2d7hy9ktXNDP2/giphy.gif',
-                    'https://media.giphy.com/media/3o72FfM5HJydzafgUE/giphy.gif',
-                    'https://media.giphy.com/media/l0MYEqEzwMWFCg8rm/giphy.gif',
-                    'https://media.giphy.com/media/3o7abGQa0aRsohveX6/giphy.gif',
-                    'https://media.giphy.com/media/3o7TKM1Fa6k5g2qsxq/giphy.gif'
-                ];
-                
-                gifResults.innerHTML = '';
-                trendingGifs.forEach(gifUrl => {
-                    const gifElement = document.createElement('img');
-                    gifElement.className = 'gif-item';
-                    gifElement.src = gifUrl;
-                    gifElement.addEventListener('click', function() {
-                        sendGifMessage(gifUrl);
-                        gifPicker.classList.remove('show');
-                    });
-                    gifResults.appendChild(gifElement);
-                });
-            }
-            
-            async function searchGifs(term = null) {
-                const searchTerm = term || gifSearch.value;
-                if (!searchTerm) {
-                    loadTrendingGifs();
-                    return;
-                }
-                
-                const apiKey = 'LIVDSRZULELA'; // Бесплатный публичный ключ Tenor
-                const limit = 20;
-                
-                try {
-                    const response = await fetch(`https://g.tenor.com/v1/search?q=${encodeURIComponent(searchTerm)}&key=${apiKey}&limit=${limit}`);
-                    const data = await response.json();
-                    
-                    gifResults.innerHTML = '';
-                    
-                    data.results.forEach(result => {
-                        const gifUrl = result.media[0].gif.url;
-                        const gifElement = document.createElement('img');
-                        gifElement.className = 'gif-item';
-                        gifElement.src = gifUrl;
-                        gifElement.addEventListener('click', function() {
-                            sendGifMessage(gifUrl);
-                            gifPicker.classList.remove('show');
-                        });
-                        gifResults.appendChild(gifElement);
-                    });
-                } catch (error) {
-                    console.error('Ошибка поиска GIF:', error);
-                    // Fallback на статические GIF
-                    loadTrendingGifs();
-                }
-            }
-            
-            function sendGifMessage(gifUrl) {
-                const user = auth.currentUser;
-                if (!user) {
-                    alert('Войдите в систему, чтобы отправлять сообщения');
-                    return;
-                }
-                
-                const displayName = user.displayName || 'Пользователь';
-                
-                const message = {
-                    gif: gifUrl,
-                    userName: displayName,
-                    userId: user.uid,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                };
-                
-                chatSendBtn.disabled = true;
-                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                
-                db.collection('chat').add(message)
-                    .then(() => {
-                        // GIF отправлен
-                    })
-                    .finally(() => {
-                        chatSendBtn.disabled = false;
-                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                    });
             }
             
             // АУТЕНТИФИКАЦИЯ
@@ -3339,7 +2947,7 @@
                     `;
                     
                     document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
-                    loadTodos(); // Загружаем задачи из localStorage
+                    loadTodos();
                 }
             }
             
@@ -3459,62 +3067,10 @@
             });
             chatSendBtn.addEventListener('click', sendMessage);
             
-            // Эмодзи и GIF
-            emojiBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                emojiPicker.classList.toggle('show');
-                gifPicker.classList.remove('show');
-            });
-            
-            gifBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                gifPicker.classList.toggle('show');
-                emojiPicker.classList.remove('show');
-            });
-            
-            emojiSearch.addEventListener('input', function(e) {
-                e.stopPropagation();
-                filterEmojis();
-            });
-            
-            emojiCategoryBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    emojiCategoryBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    filterEmojisByCategory(this.dataset.category);
-                });
-            });
-            
-            gifSearch.addEventListener('input', function(e) {
-                e.stopPropagation();
-                searchGifs();
-            });
-            
-            gifTrendingBtns.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    searchGifs(this.dataset.term);
-                });
-            });
-            
-            document.addEventListener('click', function() {
-                emojiPicker.classList.remove('show');
-                gifPicker.classList.remove('show');
-            });
-            
-            emojiPicker.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-            
-            gifPicker.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-            
             // Слушатель аутентификации
             auth.onAuthStateChanged(updateAuthUI);
             
-            // Инициализация отображения (будильник по умолчанию)
+            // Инициализация отображения
             updateModeDisplay();
         }
     </script>
