@@ -1,0 +1,1534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deynik Focus</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱️</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', monospace;
+        }
+        
+        body {
+            background-color: #121212;
+            color: #FFFFFF;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            overflow: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+        
+        /* Экран загрузки */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #121212;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-gif {
+            width: 200px;
+            height: 200px;
+            background: url('https://i.pinimg.com/originals/3b/06/ee/3b06ee2cc6a317ccdc098b4ab36a8388.gif') center/cover no-repeat;
+        }
+        
+        .loading-text {
+            margin-top: 20px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #1DB954;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.7);
+            letter-spacing: 1px;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 27%, 29%, 31%, 33%, 35%, 37%, 39%, 80%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 10px rgba(29, 185, 84, 0.7), 0 0 20px rgba(29, 185, 84, 0.5);
+            }
+            20%, 22%, 24%, 26%, 28%, 30%, 32%, 34%, 36%, 38%, 40%, 60% {
+                opacity: 0.6;
+                text-shadow: 0 0 5px rgba(29, 185, 84, 0.5);
+            }
+            65%, 70%, 75% {
+                opacity: 0.9;
+                text-shadow: 0 0 15px rgba(29, 185, 84, 0.6), 0 0 25px rgba(29, 185, 84, 0.4);
+            }
+            85%, 90%, 95% {
+                opacity: 0.7;
+                text-shadow: 0 0 8px rgba(29, 185, 84, 0.6);
+            }
+        }
+        
+        .container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-height: 100vh;
+            display: none;
+        }
+        
+        header {
+            text-align: center;
+            padding: 8px 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-start;
+        }
+        
+        .header-center {
+            flex: 2;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            justify-content: flex-end;
+        }
+        
+        .google-login-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .google-login-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .user-profile:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .user-avatar {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .user-name {
+            font-size: 0.8rem;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .nav-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .theme-switcher {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .theme-switcher:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            font-size: 1.8rem;
+            color: #1DB954;
+            text-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .content {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            flex: 1;
+            gap: 15px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+        
+        .side-panel {
+            flex: 1;
+            background: #191414;
+            border-radius: 12px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            min-width: 180px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .timer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 10px 0;
+        }
+        
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1DB954;
+            text-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
+            margin: 10px 0;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .timer-settings {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .time-input {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            width: 60px;
+            text-align: center;
+            outline: none;
+        }
+        
+        .time-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .time-label {
+            font-size: 0.8rem;
+            color: #B3B3B3;
+            margin-top: 5px;
+        }
+        
+        .btn {
+            background: rgba(50, 50, 50, 0.8);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:hover {
+            background: rgba(29, 185, 84, 0.4);
+            transform: scale(1.05);
+        }
+        
+        .btn-play {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
+        }
+        
+        .btn-play:hover {
+            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        }
+        
+        .radio-container {
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+        }
+        
+        .radio-stations {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .radio-station {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .radio-station:hover {
+            background: rgba(29, 185, 84, 0.2);
+        }
+        
+        .radio-station.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-color: #1DB954;
+        }
+        
+        .radio-icon {
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .radio-name {
+            font-size: 0.8rem;
+            flex: 1;
+        }
+        
+        .todo-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .todo-input {
+            flex: 1;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .todo-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .todo-add-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .todo-add-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .todo-list {
+            list-style: none;
+            flex: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+            padding-right: 5px;
+        }
+        
+        .todo-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .todo-list::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .todo-list::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 5px;
+        }
+        
+        .todo-item {
+            padding: 10px 12px;
+            margin: 6px 0;
+            background: rgba(40, 40, 40, 0.8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 3px solid #1DB954;
+            transition: all 0.3s ease;
+        }
+        
+        .todo-item:hover {
+            background: rgba(29, 185, 84, 0.1);
+        }
+        
+        .todo-item.completed {
+            opacity: 0.6;
+            border-left-color: #666;
+        }
+        
+        .todo-item.completed .todo-text {
+            text-decoration: line-through;
+            color: #888;
+        }
+        
+        .todo-text {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        
+        .todo-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .todo-action-btn {
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .todo-action-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
+        }
+        
+        .stats-container {
+            margin: 15px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .music-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .music-select {
+            flex: 1;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+        
+        .chat-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(29, 185, 84, 0.8);
+            border: 1px solid #1DB954;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-toggle-btn:hover {
+            background: rgba(29, 185, 84, 1);
+            transform: scale(1.1);
+        }
+        
+        .chat-container {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background: #191414;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: none;
+            flex-direction: column;
+            z-index: 99;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+        
+        .chat-container.show {
+            display: flex;
+        }
+        
+        .chat-header {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #1DB954;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 2px;
+        }
+        
+        .message {
+            padding: 6px 8px;
+            margin: 4px 0;
+            background: rgba(40, 40, 40, 0.6);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+        
+        .message-user {
+            font-weight: bold;
+            color: #1DB954;
+            margin-right: 5px;
+        }
+        
+        .message-time {
+            font-size: 0.7rem;
+            color: #888;
+            margin-left: 5px;
+        }
+        
+        .chat-input-container {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-input {
+            flex: 1;
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            outline: none;
+            height: 36px;
+        }
+        
+        .chat-input:focus {
+            border-color: #1DB954;
+        }
+        
+        .chat-send-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .chat-send-btn:hover:not(:disabled) {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .crt-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crt-effect::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 3px;
+            z-index: 2;
+            pointer-events: none;
+        }
+        
+        .vintage-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0.1) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.1;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1DB954;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 900px) {
+            .content {
+                flex-direction: column;
+            }
+            
+            .side-panel {
+                width: 100%;
+                margin-bottom: 12px;
+            }
+            
+            .timer-display {
+                font-size: 2rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .chat-container {
+                width: 90%;
+                right: 5%;
+            }
+        }
+
+        /* Темы */
+        body.retro-theme {
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        
+        body.retro-theme .vintage-overlay {
+            display: block;
+        }
+    </style>
+</head>
+<body class="retro-theme">
+    <div class="vintage-overlay"></div>
+    
+    <!-- Экран загрузки -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-gif"></div>
+        <div class="loading-text">Deynik Focus</div>
+    </div>
+    
+    <div class="container" id="mainContainer">
+        <header>
+            <div class="header-left">
+                <div id="auth-section">
+                    <button class="google-login-btn" id="googleLoginBtn">
+                        <i class="fab fa-google"></i> Войти через Google
+                    </button>
+                </div>
+            </div>
+            <div class="header-center">
+                <h1>Deynik Focus</h1>
+            </div>
+            <div class="header-right">
+                <button class="theme-switcher" id="themeSwitcher">
+                    <i class="fas fa-palette"></i> Ретро
+                </button>
+                <button class="nav-btn" id="radioNavBtn">
+                    <i class="fas fa-radio"></i> К радио
+                </button>
+            </div>
+        </header>
+        
+        <div class="content">
+            <!-- Левая панель: Таймер и радио -->
+            <div class="side-panel left-panel crt-effect">
+                <h2>Таймер</h2>
+                <div class="timer-container">
+                    <div class="timer-display" id="timer-display">25:00</div>
+                    
+                    <div class="timer-controls">
+                        <button class="btn" id="timer-pause-btn">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button class="btn btn-play" id="timer-start-btn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="btn" id="timer-reset-btn">
+                            <i class="fas fa-redo"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="timer-settings">
+                        <div>
+                            <input type="number" class="time-input" id="minutes-input" min="1" max="120" value="25">
+                            <div class="time-label">минут</div>
+                        </div>
+                        <div>
+                            <input type="number" class="time-input" id="seconds-input" min="0" max="59" value="0">
+                            <div class="time-label">секунд</div>
+                        </div>
+                        <button class="btn" id="set-time-btn" title="Установить время">
+                            <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="radio-container">
+                    <h3>Фоновое радио</h3>
+                    <div class="radio-stations" id="radio-stations">
+                        <div class="radio-station" data-station="lofi">
+                            <span class="radio-icon"><i class="fas fa-moon"></i></span>
+                            <span class="radio-name">Lo-Fi</span>
+                        </div>
+                        <div class="radio-station" data-station="chillhop">
+                            <span class="radio-icon"><i class="fas fa-headphones"></i></span>
+                            <span class="radio-name">Chillhop</span>
+                        </div>
+                        <div class="radio-station" data-station="classical">
+                            <span class="radio-icon"><i class="fas fa-music"></i></span>
+                            <span class="radio-name">Классика</span>
+                        </div>
+                        <div class="radio-station" data-station="jazz">
+                            <span class="radio-icon"><i class="fas fa-compact-disc"></i></span>
+                            <span class="radio-name">Джаз</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Центральная панель: Задачи -->
+            <div class="side-panel crt-effect">
+                <h2>Задачи</h2>
+                <div class="todo-input-container">
+                    <input type="text" class="todo-input" id="todo-input" 
+                           placeholder="Что нужно сделать?" maxlength="100">
+                    <button class="todo-add-btn" id="todo-add-btn">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul class="todo-list" id="todo-list">
+                    <!-- Задачи будут здесь -->
+                </ul>
+            </div>
+            
+            <!-- Правая панель: Статистика и настройки -->
+            <div class="side-panel crt-effect">
+                <h2>Статистика</h2>
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <span>Сегодня:</span>
+                        <span id="today-pomodoros">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Завершено задач:</span>
+                        <span id="completed-tasks">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>Всего таймеров:</span>
+                        <span id="total-pomodoros">0</span>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h3>О Deynik Focus</h3>
+                    <p style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
+                        Настраиваемый таймер для продуктивности. 
+                        Установите любое время и работайте с фоновой музыкой.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Кнопка чата -->
+    <button class="chat-toggle-btn" id="chat-toggle-btn">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Чат -->
+    <div class="chat-container crt-effect" id="chat-container">
+        <div class="chat-header">
+            <i class="fas fa-comments"></i>
+            <h3>Чат Deynik</h3>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message">
+                <span class="message-user">Система:</span>
+                Добро пожаловать в чат Deynik Focus!
+                <span class="message-time">только что</span>
+            </div>
+        </div>
+        <div class="chat-input-container">
+            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
+            <button class="chat-send-btn" id="chat-send-btn" disabled>
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">Текст уведомления</div>
+
+    <script>
+        // Инициализация Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBk4nxZ1ldNQUCxsbgaeYTkm9stq0o9o2Q",
+            authDomain: "deygram-e4814.firebaseapp.com",
+            projectId: "deygram-e4814",
+            storageBucket: "deygram-e4814.firebasestorage.app",
+            messagingSenderId: "591207353726",
+            appId: "1:591207353726:web:d20f5e648d3daf86fcb72f"
+        };
+
+        // Инициализируем Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Радиостанции
+        const radioStations = {
+            lofi: {
+                name: "Lo-Fi Radio",
+                url: "https://play.streamafrica.net/lofiradio",
+                icon: "fas fa-moon"
+            },
+            chillhop: {
+                name: "Chillhop Radio",
+                url: "https://stream-178.zeno.fm/f3wvbbqmdg8uv",
+                icon: "fas fa-headphones"
+            },
+            classical: {
+                name: "Classical Radio",
+                url: "https://stream-158.zeno.fm/0r0xa792kwzuv",
+                icon: "fas fa-music"
+            },
+            jazz: {
+                name: "Jazz Radio", 
+                url: "https://knkx-live-a.edge.audiocdn.com/6285_128k",
+                icon: "fas fa-compact-disc"
+            }
+        };
+
+        // ПРОСТОЙ И РАБОЧИЙ ВАРИАНТ ЗАГРУЗКИ
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('mainContainer').style.display = 'flex';
+                initApp();
+            }, 1000);
+        };
+
+        function initApp() {
+            console.log('Deynik Focus запущен!');
+            
+            // Элементы DOM
+            const timerDisplay = document.getElementById('timer-display');
+            const timerStartBtn = document.getElementById('timer-start-btn');
+            const timerPauseBtn = document.getElementById('timer-pause-btn');
+            const timerResetBtn = document.getElementById('timer-reset-btn');
+            const minutesInput = document.getElementById('minutes-input');
+            const secondsInput = document.getElementById('seconds-input');
+            const setTimeBtn = document.getElementById('set-time-btn');
+            const radioStationsContainer = document.getElementById('radio-stations');
+            const todoInput = document.getElementById('todo-input');
+            const todoAddBtn = document.getElementById('todo-add-btn');
+            const todoList = document.getElementById('todo-list');
+            const todayPomodoros = document.getElementById('today-pomodoros');
+            const completedTasks = document.getElementById('completed-tasks');
+            const totalPomodoros = document.getElementById('total-pomodoros');
+            const radioNavBtn = document.getElementById('radioNavBtn');
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            const notification = document.getElementById('notification');
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            const chatToggleBtn = document.getElementById('chat-toggle-btn');
+            const chatContainer = document.getElementById('chat-container');
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            
+            // Переменные таймера
+            let timer;
+            let isRunning = false;
+            let timeLeft = 25 * 60; // 25 минут по умолчанию
+            let totalPomodoroCount = 0;
+            let todayPomodoroCount = 0;
+            let completedTasksCount = 0;
+            let currentAudio = null;
+            let currentRadioStation = null;
+            let chatUnsubscribe = null;
+            
+            // Инициализация
+            updateTimerDisplay();
+            loadUserData();
+            loadTodos();
+            loadChatHistory();
+            
+            // Функция показа уведомления
+            function showNotification(message, type = 'info') {
+                notification.textContent = message;
+                notification.className = 'notification';
+                
+                if (type === 'success') {
+                    notification.style.background = '#1DB954';
+                } else if (type === 'error') {
+                    notification.style.background = '#FF5722';
+                } else {
+                    notification.style.background = '#2196F3';
+                }
+                
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // Обновление отображения таймера
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            // Запуск таймера
+            function startTimer() {
+                if (isRunning) return;
+                
+                isRunning = true;
+                timerStartBtn.style.display = 'none';
+                timerPauseBtn.style.display = 'flex';
+                
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        timerComplete();
+                    }
+                }, 1000);
+            }
+            
+            // Пауза таймера
+            function pauseTimer() {
+                if (!isRunning) return;
+                
+                clearInterval(timer);
+                isRunning = false;
+                timerStartBtn.style.display = 'flex';
+                timerPauseBtn.style.display = 'none';
+            }
+            
+            // Сброс таймера
+            function resetTimer() {
+                clearInterval(timer);
+                isRunning = false;
+                timeLeft = parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
+                updateTimerDisplay();
+                timerStartBtn.style.display = 'flex';
+                timerPauseBtn.style.display = 'none';
+            }
+            
+            // Установка времени
+            function setTime() {
+                const minutes = parseInt(minutesInput.value) || 0;
+                const seconds = parseInt(secondsInput.value) || 0;
+                
+                if (minutes < 0 || minutes > 120 || seconds < 0 || seconds > 59) {
+                    showNotification('Некорректное время!', 'error');
+                    return;
+                }
+                
+                if (minutes === 0 && seconds === 0) {
+                    showNotification('Установите время больше 0', 'error');
+                    return;
+                }
+                
+                if (isRunning) {
+                    showNotification('Сначала остановите таймер', 'error');
+                    return;
+                }
+                
+                timeLeft = minutes * 60 + seconds;
+                updateTimerDisplay();
+                showNotification(`Время установлено: ${minutes}:${seconds.toString().padStart(2, '0')}`, 'success');
+            }
+            
+            // Завершение таймера
+            function timerComplete() {
+                // Воспроизведение звука уведомления
+                playNotificationSound();
+                
+                totalPomodoroCount++;
+                todayPomodoroCount++;
+                
+                // Обновление статистики
+                updateStats();
+                saveUserData();
+                
+                // Показ уведомления
+                showNotification('Таймер завершен!', 'success');
+                
+                // Автоматический сброс
+                setTimeout(() => {
+                    resetTimer();
+                }, 2000);
+            }
+            
+            // Воспроизведение звука уведомления
+            function playNotificationSound() {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1);
+                } catch (e) {
+                    console.log('Audio context not supported');
+                }
+            }
+            
+            // Воспроизведение радио
+            function playRadio(stationId) {
+                // Останавливаем текущее радио
+                if (currentAudio) {
+                    currentAudio.pause();
+                    currentAudio = null;
+                }
+                
+                // Снимаем выделение со всех станций
+                document.querySelectorAll('.radio-station').forEach(station => {
+                    station.classList.remove('active');
+                });
+                
+                // Если выбрана та же станция - просто выключаем
+                if (currentRadioStation === stationId) {
+                    currentRadioStation = null;
+                    showNotification('Радио выключено', 'info');
+                    return;
+                }
+                
+                // Включаем выбранную станцию
+                const station = radioStations[stationId];
+                if (!station) return;
+                
+                try {
+                    currentAudio = new Audio(station.url);
+                    currentAudio.volume = 0.3;
+                    currentAudio.play().then(() => {
+                        currentRadioStation = stationId;
+                        document.querySelector(`.radio-station[data-station="${stationId}"]`).classList.add('active');
+                        showNotification(`Включено: ${station.name}`, 'success');
+                    }).catch(error => {
+                        console.error('Ошибка воспроизведения радио:', error);
+                        showNotification('Ошибка воспроизведения радио', 'error');
+                    });
+                } catch (error) {
+                    console.error('Ошибка создания аудио:', error);
+                    showNotification('Ошибка создания аудио', 'error');
+                }
+            }
+            
+            // Работа с задачами
+            function addTodo() {
+                const text = todoInput.value.trim();
+                if (text === '') return;
+                
+                const todo = {
+                    id: Date.now().toString(),
+                    text: text,
+                    completed: false,
+                    createdAt: new Date()
+                };
+                
+                // Добавление в DOM
+                addTodoToDOM(todo);
+                
+                // Сохранение в Firebase
+                saveTodo(todo);
+                
+                // Очистка input
+                todoInput.value = '';
+                
+                showNotification('Задача добавлена!', 'success');
+            }
+            
+            function addTodoToDOM(todo) {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                li.setAttribute('data-id', todo.id);
+                
+                li.innerHTML = `
+                    <span class="todo-text">${todo.text}</span>
+                    <div class="todo-actions">
+                        <button class="todo-action-btn complete-btn" title="Завершить">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="todo-action-btn delete-btn" title="Удалить">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Обработчики событий
+                const completeBtn = li.querySelector('.complete-btn');
+                const deleteBtn = li.querySelector('.delete-btn');
+                
+                completeBtn.addEventListener('click', () => toggleTodoComplete(todo.id));
+                deleteBtn.addEventListener('click', () => deleteTodo(todo.id));
+                
+                todoList.appendChild(li);
+            }
+            
+            function toggleTodoComplete(id) {
+                const todoItem = document.querySelector(`.todo-item[data-id="${id}"]`);
+                const isCompleted = todoItem.classList.contains('completed');
+                
+                if (!isCompleted) {
+                    todoItem.classList.add('completed');
+                    completedTasksCount++;
+                    showNotification('Задача завершена!', 'success');
+                } else {
+                    todoItem.classList.remove('completed');
+                    completedTasksCount--;
+                }
+                
+                completedTasks.textContent = completedTasksCount;
+                updateTodoInFirebase(id, !isCompleted);
+                saveUserData();
+            }
+            
+            function deleteTodo(id) {
+                const todoItem = document.querySelector(`.todo-item[data-id="${id}"]`);
+                if (todoItem) {
+                    todoItem.remove();
+                    deleteTodoFromFirebase(id);
+                    showNotification('Задача удалена', 'info');
+                }
+            }
+            
+            // Firebase функции для задач
+            function saveTodo(todo) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('todos').doc(todo.id).set(todo);
+            }
+            
+            function updateTodoInFirebase(id, completed) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('todos').doc(id).update({
+                    completed: completed
+                });
+            }
+            
+            function deleteTodoFromFirebase(id) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('todos').doc(id).delete();
+            }
+            
+            function loadTodos() {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('todos')
+                    .orderBy('createdAt', 'desc')
+                    .onSnapshot((snapshot) => {
+                        todoList.innerHTML = '';
+                        completedTasksCount = 0;
+                        
+                        snapshot.forEach((doc) => {
+                            const todo = doc.data();
+                            addTodoToDOM(todo);
+                            
+                            if (todo.completed) {
+                                completedTasksCount++;
+                            }
+                        });
+                        
+                        completedTasks.textContent = completedTasksCount;
+                    });
+            }
+            
+            // Работа с пользовательскими данными
+            function saveUserData() {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                const userData = {
+                    totalPomodoros: totalPomodoroCount,
+                    todayPomodoros: todayPomodoroCount,
+                    lastUpdated: new Date()
+                };
+                
+                db.collection('users').doc(user.uid).set(userData, { merge: true });
+            }
+            
+            function loadUserData() {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).get().then((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        totalPomodoroCount = data.totalPomodoros || 0;
+                        todayPomodoroCount = data.todayPomodoros || 0;
+                        
+                        // Сброс дневного счетчика если это новый день
+                        const lastUpdated = data.lastUpdated?.toDate();
+                        const today = new Date();
+                        if (lastUpdated && (
+                            lastUpdated.getDate() !== today.getDate() ||
+                            lastUpdated.getMonth() !== today.getMonth() ||
+                            lastUpdated.getFullYear() !== today.getFullYear()
+                        )) {
+                            todayPomodoroCount = 0;
+                        }
+                        
+                        updateStats();
+                    }
+                });
+            }
+            
+            function updateStats() {
+                todayPomodoros.textContent = todayPomodoroCount;
+                totalPomodoros.textContent = totalPomodoroCount;
+                completedTasks.textContent = completedTasksCount;
+            }
+            
+            // Работа с чатом
+            function loadChatHistory() {
+                if (chatUnsubscribe) chatUnsubscribe();
+                
+                chatUnsubscribe = db.collection('focusChat')
+                    .orderBy('timestamp', 'desc')
+                    .limit(50)
+                    .onSnapshot((snapshot) => {
+                        chatMessages.innerHTML = '';
+                        
+                        if (snapshot.empty) {
+                            chatMessages.innerHTML = '<div class="message">Чат пуст. Будьте первым!</div>';
+                            return;
+                        }
+                        
+                        const messages = [];
+                        snapshot.forEach((doc) => {
+                            messages.push({ id: doc.id, ...doc.data() });
+                        });
+                        
+                        messages.sort((a, b) => {
+                            const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+                            const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+                            return timeA - timeB;
+                        });
+                        
+                        messages.forEach((message) => {
+                            addMessageToChat(message);
+                        });
+                        
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                    });
+            }
+            
+            function addMessageToChat(message) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message';
+                
+                let timeString = 'только что';
+                if (message.timestamp) {
+                    const time = message.timestamp.toDate ? message.timestamp.toDate() : new Date(message.timestamp);
+                    timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                }
+                
+                messageElement.innerHTML = `
+                    <span class="message-user">${message.userName || 'Аноним'}:</span>
+                    ${message.text || ''}
+                    <span class="message-time">${timeString}</span>
+                `;
+                
+                chatMessages.appendChild(messageElement);
+            }
+            
+            function sendMessage() {
+                const user = auth.currentUser;
+                const messageText = chatInput.value.trim();
+                if (messageText === '') return;
+                
+                const displayName = user ? (user.displayName || 'Пользователь') : 'Аноним';
+                
+                const message = {
+                    text: messageText,
+                    userName: displayName,
+                    userId: user ? user.uid : 'anonymous',
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                chatSendBtn.disabled = true;
+                chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                db.collection('focusChat').add(message)
+                    .then(() => {
+                        chatInput.value = '';
+                    })
+                    .finally(() => {
+                        chatSendBtn.disabled = false;
+                        chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                    });
+            }
+            
+            // Функции для аутентификации
+            function updateAuthUI(user) {
+                const authSection = document.getElementById('auth-section');
+                
+                if (user) {
+                    const displayName = user.displayName || 'Пользователь';
+                    const firstLetter = displayName.charAt(0).toUpperCase();
+                    
+                    authSection.innerHTML = `
+                        <div class="user-profile">
+                            <div class="user-avatar">${firstLetter}</div>
+                            <div class="user-name">${displayName}</div>
+                        </div>
+                    `;
+                    
+                    loadUserData();
+                    loadTodos();
+                    
+                } else {
+                    authSection.innerHTML = `
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <i class="fab fa-google"></i> Войти через Google
+                        </button>
+                    `;
+                    
+                    document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                }
+            }
+            
+            function signInWithGoogle() {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.setCustomParameters({ prompt: 'select_account' });
+                auth.signInWithPopup(provider);
+            }
+            
+            // Обработчики событий
+            timerStartBtn.addEventListener('click', startTimer);
+            timerPauseBtn.addEventListener('click', pauseTimer);
+            timerResetBtn.addEventListener('click', resetTimer);
+            setTimeBtn.addEventListener('click', setTime);
+            
+            // Радио станции
+            document.querySelectorAll('.radio-station').forEach(station => {
+                station.addEventListener('click', function() {
+                    playRadio(this.dataset.station);
+                });
+            });
+            
+            todoAddBtn.addEventListener('click', addTodo);
+            todoInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') addTodo();
+            });
+            
+            radioNavBtn.addEventListener('click', function() {
+                window.location.href = 'РАДИО.html';
+            });
+            
+            themeSwitcher.addEventListener('click', function() {
+                // Простая смена темы
+                document.body.classList.toggle('retro-theme');
+                document.body.classList.toggle('cyber-theme');
+                
+                if (document.body.classList.contains('cyber-theme')) {
+                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Кибер';
+                } else {
+                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
+                }
+            });
+            
+            // Чат
+            chatToggleBtn.addEventListener('click', function() {
+                chatContainer.classList.toggle('show');
+            });
+            
+            chatInput.addEventListener('input', function() {
+                chatSendBtn.disabled = this.value.trim() === '';
+            });
+            
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
+            });
+            
+            chatSendBtn.addEventListener('click', sendMessage);
+            
+            // Слушатель состояния аутентификации
+            auth.onAuthStateChanged(updateAuthUI);
+            
+            // Инициализация при загрузке
+            timerPauseBtn.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
