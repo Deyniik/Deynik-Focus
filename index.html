@@ -25,11 +25,8 @@
             background-color: #121212;
             color: #FFFFFF;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 12px;
             overflow: hidden;
-            transition: background-color 0.5s ease, color 0.5s ease;
+            transition: all 0.3s ease;
         }
         
         /* Экран загрузки */
@@ -48,9 +45,9 @@
         }
         
         .loading-gif {
-            width: 200px;
-            height: 200px;
-            background: url('https://i.pinimg.com/originals/3b/06/ee/3b06ee2cc6a317ccdc098b4ab36a8388.gif') center/cover no-repeat;
+            width: 120px;
+            height: 120px;
+            background: url('https://mcpe-inside.ru/uploads/files/2024-02/recovery_compass_hud_2.gif') center/cover no-repeat;
         }
         
         .loading-text {
@@ -83,13 +80,20 @@
             }
         }
         
-        .container {
+        .app-container {
+            display: flex;
+            height: 100vh;
             width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            max-height: 100vh;
-            display: none;
+            padding: 12px;
+            min-width: 0;
+            transition: all 0.3s ease;
         }
         
         header {
@@ -203,21 +207,23 @@
             transform: scale(1.05);
         }
         
-        .theme-switcher {
+        /* КНОПКА НАСТРОЕК - ЗНАЧЕК ШЕСТЕРЕНКИ */
+        .settings-icon-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 5px;
+            justify-content: center;
         }
         
-        .theme-switcher:hover {
+        .settings-icon-btn:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
         }
@@ -249,101 +255,619 @@
             flex-direction: column;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            min-width: 180px;
+            min-width: 0;
             overflow: hidden;
             transition: all 0.3s ease;
         }
         
-        .timer-container {
+        /* ЗАГОЛОВОК С ПЕРЕКЛЮЧАТЕЛЕМ РЕЖИМОВ */
+        .mode-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .mode-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mode-nav {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .mode-nav-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mode-nav-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.1);
+        }
+        
+        /* КОНТЕЙНЕР БУДИЛЬНИКА */
+        .alarm-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
+            justify-content: flex-start;
+            gap: 20px;
             margin: 10px 0;
+            flex: 1;
         }
         
-        .timer-display {
-            font-size: 2.5rem;
+        .time-display {
+            font-size: 4.5rem;
+            font-weight: bold;
+            color: #1DB954;
+            text-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
+            margin: 10px 0;
+            letter-spacing: 2px;
+        }
+        
+        .alarm-controls {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+        
+        /* УМЕНЬШЕННЫЕ КНОПКИ */
+        .alarm-btn, .timer-btn, .stopwatch-btn {
+            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
+            border: none;
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 15px rgba(29, 185, 84, 0.6);
+        }
+        
+        .alarm-btn:hover, .timer-btn:hover, .stopwatch-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
+        }
+        
+        .stopwatch-btn.reset {
+            background: linear-gradient(135deg, #FF6B6B 0%, #191414 100%);
+            box-shadow: 0 0 15px rgba(255, 107, 107, 0.6);
+        }
+        
+        .stopwatch-btn.reset:hover {
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.8);
+        }
+        
+        /* СПИСОК БУДИЛЬНИКОВ */
+        .alarms-list {
+            width: 100%;
+            max-width: 300px;
+            margin-top: 10px;
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .alarm-item {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.3s ease;
+        }
+        
+        .alarm-item:hover {
+            background: rgba(29, 185, 84, 0.1);
+        }
+        
+        .alarm-item.active {
+            background: rgba(29, 185, 84, 0.2);
+            border-color: #1DB954;
+        }
+        
+        .alarm-time {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1DB954;
+        }
+        
+        .alarm-label {
+            font-size: 0.9rem;
+            color: #B3B3B3;
+        }
+        
+        .alarm-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+        
+        .alarm-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .alarm-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #666;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .alarm-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .alarm-slider {
+            background-color: #1DB954;
+        }
+        
+        input:checked + .alarm-slider:before {
+            transform: translateX(24px);
+        }
+        
+        .add-alarm-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .add-alarm-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        /* ТАЙМЕР И СЕКУНДОМЕР */
+        .timer-container, .stopwatch-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 20px;
+            margin: 10px 0;
+            flex: 1;
+        }
+        
+        .timer-display, .stopwatch-display {
+            font-size: 4rem;
             font-weight: bold;
             color: #1DB954;
             text-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
             margin: 10px 0;
         }
         
-        .timer-controls {
+        .timer-controls, .stopwatch-controls {
             display: flex;
-            gap: 10px;
+            gap: 20px;
             margin-bottom: 10px;
         }
         
-        .timer-settings {
+        .timer-presets, .stopwatch-laps {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 8px;
+            margin-top: 15px;
             flex-wrap: wrap;
             justify-content: center;
         }
         
-        .time-input {
+        .preset-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #B3B3B3;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            min-width: 70px;
+        }
+        
+        .preset-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
             color: white;
-            padding: 5px 10px;
-            border-radius: 8px;
+        }
+        
+        .preset-btn.active {
+            background: rgba(29, 185, 84, 0.3);
+            color: #1DB954;
+            border-color: #1DB954;
+        }
+        
+        .lap-item {
+            background: rgba(40, 40, 40, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 8px 12px;
             font-size: 0.9rem;
-            width: 60px;
+            color: #B3B3B3;
+        }
+        
+        /* УЛУЧШЕННЫЙ ВЫБОР ВРЕМЕНИ */
+        .time-picker-container {
+            background: rgba(40, 40, 40, 0.6);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 15px;
+            width: 100%;
+            max-width: 260px;
+        }
+        
+        .time-picker-title {
+            text-align: center;
+            color: #1DB954;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+        
+        .time-picker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .time-input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            flex: 1;
+        }
+        
+        .time-input-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .time-input-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .time-input-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .time-input {
+            background: rgba(60, 60, 60, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 6px;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 50px;
             text-align: center;
             outline: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            -moz-appearance: textfield;
+        }
+        
+        .time-input::-webkit-outer-spin-button,
+        .time-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
         
         .time-input:focus {
             border-color: #1DB954;
+            box-shadow: 0 0 8px rgba(29, 185, 84, 0.4);
         }
         
         .time-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #B3B3B3;
-            margin-top: 5px;
+            font-weight: bold;
         }
         
-        .btn {
-            background: rgba(50, 50, 50, 0.8);
-            border: none;
+        .time-separator {
+            font-size: 1.3rem;
+            color: #1DB954;
+            font-weight: bold;
+            margin: 0 2px;
+        }
+        
+        /* КНОПКА НАСТРОЕК */
+        .settings-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 1rem;
+            padding: 8px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .settings-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.02);
+        }
+        
+        /* МОДАЛЬНОЕ ОКНО НАСТРОЕК */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .modal-content {
+            background-color: #191414;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: #1DB954;
+        }
+        
+        /* МОДАЛЬНОЕ ОКНО ДОБАВЛЕНИЯ БУДИЛЬНИКА */
+        .alarm-modal-content {
+            background-color: #191414;
+            margin: 15% auto;
+            padding: 25px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 350px;
+            border: 2px solid #1DB954;
+            position: relative;
+        }
+        
+        .alarm-time-picker {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .alarm-time-input {
+            background: rgba(60, 60, 60, 0.8);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 1.8rem;
+            width: 80px;
+            text-align: center;
+            outline: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .alarm-time-input:focus {
+            border-color: #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.4);
+        }
+        
+        .alarm-time-separator {
+            font-size: 2rem;
+            color: #1DB954;
+            font-weight: bold;
+        }
+        
+        .alarm-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        
+        .alarm-modal-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+        
+        .alarm-modal-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .alarm-modal-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .alarm-modal-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* НАСТРОЙКИ ЗВУКА В МОДАЛКЕ */
+        .sound-settings-modal {
+            margin-top: 15px;
+        }
+        
+        .sound-title {
+            color: #1DB954;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        
+        .sound-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .sound-option {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 12px 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            justify-content: center;
             align-items: center;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            gap: 12px;
+            font-size: 0.9rem;
         }
         
-        .btn:hover {
-            background: rgba(29, 185, 84, 0.4);
-            transform: scale(1.05);
+        .sound-option:hover {
+            background: rgba(29, 185, 84, 0.2);
         }
         
-        .btn-play {
-            background: linear-gradient(135deg, #1DB954 0%, #191414 100%);
-            width: 50px;
-            height: 50px;
+        .sound-option.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-color: #1DB954;
+        }
+        
+        .sound-icon {
             font-size: 1.2rem;
-            box-shadow: 0 0 12px rgba(29, 185, 84, 0.6);
+            width: 25px;
+            text-align: center;
         }
         
-        .btn-play:hover {
-            box-shadow: 0 0 16px rgba(29, 185, 84, 0.8);
+        .sound-preview-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-left: auto;
         }
         
+        .sound-preview-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            background: rgba(29, 185, 84, 0.3);
+            border: 1px solid #1DB954;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn:hover {
+            background: rgba(29, 185, 84, 0.5);
+        }
+        
+        .modal-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* РАДИО КОНТЕЙНЕР - ФИКСИРОВАННАЯ ВЫСОТА */
         .radio-container {
-            margin-top: 15px;
+            margin-top: auto;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 15px;
+            min-height: 180px;
+            flex-shrink: 0;
         }
         
         .radio-stations {
@@ -383,6 +907,48 @@
         .radio-name {
             font-size: 0.8rem;
             flex: 1;
+        }
+        
+        /* ЗАДАЧИ С ПЕРЕКЛЮЧАТЕЛЕМ ДНЕЙ */
+        .tasks-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .tasks-date-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .date-display-tasks {
+            font-size: 1rem;
+            color: #1DB954;
+            font-weight: bold;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .date-nav-btn {
+            background: rgba(40, 40, 40, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .date-nav-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.1);
         }
         
         .todo-input-container {
@@ -513,61 +1079,132 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        .music-controls {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
+        /* МЕНЮ СЕРВИСОВ */
+        .services-menu {
+            position: relative;
         }
         
-        .music-select {
-            flex: 1;
+        .services-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 12px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .services-btn:hover {
+            background: rgba(29, 185, 84, 0.3);
+            transform: scale(1.05);
+        }
+        
+        .services-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: rgba(40, 40, 40, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 8px;
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+        }
+        
+        .services-dropdown.show {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .service-item {
+            background: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 8px;
-            font-size: 0.9rem;
-            outline: none;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            text-align: center;
+            height: 80px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .service-item:hover {
+            background: rgba(29, 185, 84, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .service-item.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-color: #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.4);
+        }
+        
+        .service-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+        
+        .service-name {
+            font-size: 0.65rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .service-desc {
+            font-size: 0.55rem;
+            color: #B3B3B3;
+            line-height: 1.1;
         }
         
         .chat-toggle-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(29, 185, 84, 0.8);
+            background: rgba(29, 185, 84, 0.3);
             border: 1px solid #1DB954;
             color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            font-size: 0.9rem;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+            width: 100%;
         }
         
         .chat-toggle-btn:hover {
-            background: rgba(29, 185, 84, 1);
-            transform: scale(1.1);
+            background: rgba(29, 185, 84, 0.5);
         }
         
         .chat-container {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 300px;
-            height: 400px;
-            background: #191414;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            display: none;
+            flex: 1;
+            display: flex;
             flex-direction: column;
-            z-index: 99;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            margin-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            min-height: 200px;
+            display: none;
         }
         
         .chat-container.show {
@@ -575,20 +1212,22 @@
         }
         
         .chat-header {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             gap: 8px;
+            margin-bottom: 10px;
             color: #1DB954;
         }
         
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 10px;
+            max-height: none;
+            margin-bottom: 10px;
             scrollbar-width: thin;
             scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+            display: flex;
+            flex-direction: column;
         }
         
         .chat-messages::-webkit-scrollbar {
@@ -612,6 +1251,12 @@
             font-size: 0.8rem;
             line-height: 1.2;
             word-wrap: break-word;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .message:hover {
+            background: rgba(40, 40, 40, 0.8);
         }
         
         .message-user {
@@ -629,8 +1274,8 @@
         .chat-input-container {
             display: flex;
             gap: 8px;
-            padding: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+            position: relative;
         }
         
         .chat-input {
@@ -638,7 +1283,7 @@
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 8px 10px;
+            padding: 8px 10px 8px 80px;
             border-radius: 15px;
             font-size: 0.8rem;
             outline: none;
@@ -647,6 +1292,38 @@
         
         .chat-input:focus {
             border-color: #1DB954;
+        }
+        
+        .emoji-btn, .gif-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #B3B3B3;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        
+        .emoji-btn {
+            left: 8px;
+        }
+        
+        .gif-btn {
+            left: 40px;
+        }
+        
+        .emoji-btn:hover, .gif-btn:hover {
+            background: rgba(29, 185, 84, 0.2);
+            color: #1DB954;
         }
         
         .chat-send-btn {
@@ -707,7 +1384,7 @@
         .notification {
             position: fixed;
             bottom: 20px;
-            right: 20px;
+            left: 20px;
             background: #1DB954;
             color: white;
             padding: 10px 15px;
@@ -731,17 +1408,16 @@
                 margin-bottom: 12px;
             }
             
-            .timer-display {
-                font-size: 2rem;
+            .time-display, .timer-display, .stopwatch-display {
+                font-size: 3rem;
             }
             
             h1 {
                 font-size: 1.5rem;
             }
             
-            .chat-container {
-                width: 90%;
-                right: 5%;
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -765,152 +1441,320 @@
         <div class="loading-text">Deynik Focus</div>
     </div>
     
-    <div class="container" id="mainContainer">
-        <header>
-            <div class="header-left">
-                <div id="auth-section">
-                    <button class="google-login-btn" id="googleLoginBtn">
-                        <i class="fab fa-google"></i> Войти через Google
-                    </button>
-                </div>
-            </div>
-            <div class="header-center">
-                <h1>Deynik Focus</h1>
-            </div>
-            <div class="header-right">
-                <button class="theme-switcher" id="themeSwitcher">
-                    <i class="fas fa-palette"></i> Ретро
-                </button>
-                <button class="nav-btn" id="radioNavBtn">
-                    <i class="fas fa-radio"></i> К радио
-                </button>
-            </div>
-        </header>
-        
-        <div class="content">
-            <!-- Левая панель: Таймер и радио -->
-            <div class="side-panel left-panel crt-effect">
-                <h2>Таймер</h2>
-                <div class="timer-container">
-                    <div class="timer-display" id="timer-display">25:00</div>
-                    
-                    <div class="timer-controls">
-                        <button class="btn" id="timer-pause-btn">
-                            <i class="fas fa-pause"></i>
-                        </button>
-                        <button class="btn btn-play" id="timer-start-btn">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="btn" id="timer-reset-btn">
-                            <i class="fas fa-redo"></i>
+    <!-- Модальное окно настроек звука -->
+    <div class="modal" id="soundSettingsModal">
+        <div class="modal-content">
+            <span class="close" id="closeSoundModal">&times;</span>
+            <h3>Настройки звука будильника</h3>
+            <div class="sound-settings-modal">
+                <div class="sound-title">Выберите мелодию</div>
+                <div class="sound-options" id="sound-options">
+                    <div class="sound-option active" data-sound="classic">
+                        <span class="sound-icon">🔔</span>
+                        <span>Классический</span>
+                        <button class="sound-preview-btn" data-sound="classic">
+                            <i class="fas fa-play"></i> Слушать
                         </button>
                     </div>
-                    
-                    <div class="timer-settings">
-                        <div>
-                            <input type="number" class="time-input" id="minutes-input" min="1" max="120" value="25">
-                            <div class="time-label">минут</div>
-                        </div>
-                        <div>
-                            <input type="number" class="time-input" id="seconds-input" min="0" max="59" value="0">
-                            <div class="time-label">секунд</div>
-                        </div>
-                        <button class="btn" id="set-time-btn" title="Установить время">
-                            <i class="fas fa-check"></i>
+                    <div class="sound-option" data-sound="chime">
+                        <span class="sound-icon">🎵</span>
+                        <span>Колокольчик</span>
+                        <button class="sound-preview-btn" data-sound="chime">
+                            <i class="fas fa-play"></i> Слушать
+                        </button>
+                    </div>
+                    <div class="sound-option" data-sound="digital">
+                        <span class="sound-icon">📱</span>
+                        <span>Цифровой</span>
+                        <button class="sound-preview-btn" data-sound="digital">
+                            <i class="fas fa-play"></i> Слушать
+                        </button>
+                    </div>
+                    <div class="sound-option" data-sound="nature">
+                        <span class="sound-icon">🌿</span>
+                        <span>Природа</span>
+                        <button class="sound-preview-btn" data-sound="nature">
+                            <i class="fas fa-play"></i> Слушать
+                        </button>
+                    </div>
+                    <div class="sound-option" data-sound="melody">
+                        <span class="sound-icon">🎹</span>
+                        <span>Мелодия</span>
+                        <button class="sound-preview-btn" data-sound="melody">
+                            <i class="fas fa-play"></i> Слушать
+                        </button>
+                    </div>
+                    <div class="sound-option" data-sound="epic">
+                        <span class="sound-icon">⚡</span>
+                        <span>Эпический</span>
+                        <button class="sound-preview-btn" data-sound="epic">
+                            <i class="fas fa-play"></i> Слушать
                         </button>
                     </div>
                 </div>
-                
-                <div class="radio-container">
-                    <h3>Фоновое радио</h3>
-                    <div class="radio-stations" id="radio-stations">
-                        <div class="radio-station" data-station="lofi">
-                            <span class="radio-icon"><i class="fas fa-moon"></i></span>
-                            <span class="radio-name">Lo-Fi</span>
-                        </div>
-                        <div class="radio-station" data-station="chillhop">
-                            <span class="radio-icon"><i class="fas fa-headphones"></i></span>
-                            <span class="radio-name">Chillhop</span>
-                        </div>
-                        <div class="radio-station" data-station="classical">
-                            <span class="radio-icon"><i class="fas fa-music"></i></span>
-                            <span class="radio-name">Классика</span>
-                        </div>
-                        <div class="radio-station" data-station="jazz">
-                            <span class="radio-icon"><i class="fas fa-compact-disc"></i></span>
-                            <span class="radio-name">Джаз</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Центральная панель: Задачи -->
-            <div class="side-panel crt-effect">
-                <h2>Задачи</h2>
-                <div class="todo-input-container">
-                    <input type="text" class="todo-input" id="todo-input" 
-                           placeholder="Что нужно сделать?" maxlength="100">
-                    <button class="todo-add-btn" id="todo-add-btn">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                </div>
-                <ul class="todo-list" id="todo-list">
-                    <!-- Задачи будут здесь -->
-                </ul>
-            </div>
-            
-            <!-- Правая панель: Статистика и настройки -->
-            <div class="side-panel crt-effect">
-                <h2>Статистика</h2>
-                <div class="stats-container">
-                    <div class="stat-item">
-                        <span>Сегодня:</span>
-                        <span id="today-pomodoros">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Завершено задач:</span>
-                        <span id="completed-tasks">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>Всего таймеров:</span>
-                        <span id="total-pomodoros">0</span>
-                    </div>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <h3>О Deynik Focus</h3>
-                    <p style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
-                        Настраиваемый таймер для продуктивности. 
-                        Установите любое время и работайте с фоновой музыкой.
-                    </p>
+                <div class="modal-actions">
+                    <button class="modal-btn cancel" id="cancelSoundBtn">Отмена</button>
+                    <button class="modal-btn" id="saveSoundBtn">Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Кнопка чата -->
-    <button class="chat-toggle-btn" id="chat-toggle-btn">
-        <i class="fas fa-comments"></i>
-    </button>
-
-    <!-- Чат -->
-    <div class="chat-container crt-effect" id="chat-container">
-        <div class="chat-header">
-            <i class="fas fa-comments"></i>
-            <h3>Чат Deynik</h3>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <div class="message">
-                <span class="message-user">Система:</span>
-                Добро пожаловать в чат Deynik Focus!
-                <span class="message-time">только что</span>
+    
+    <!-- Модальное окно добавления будильника -->
+    <div class="modal" id="alarmModal">
+        <div class="alarm-modal-content">
+            <span class="close" id="closeAlarmModal">&times;</span>
+            <h3>Добавить будильник</h3>
+            <div class="alarm-time-picker">
+                <input type="number" class="alarm-time-input" id="alarm-hours" min="0" max="23" value="7">
+                <span class="alarm-time-separator">:</span>
+                <input type="number" class="alarm-time-input" id="alarm-minutes" min="0" max="59" value="30">
+            </div>
+            <div class="alarm-modal-actions">
+                <button class="alarm-modal-btn cancel" id="cancelAlarmBtn">Отмена</button>
+                <button class="alarm-modal-btn" id="saveAlarmBtn">Сохранить</button>
             </div>
         </div>
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
-            <button class="chat-send-btn" id="chat-send-btn" disabled>
-                <i class="fas fa-paper-plane"></i>
-            </button>
+    </div>
+    
+    <div class="app-container" id="appContainer">
+        <div class="main-content">
+            <header>
+                <div class="header-left">
+                    <div id="auth-section">
+                        <button class="google-login-btn" id="googleLoginBtn">
+                            <i class="fab fa-google"></i> Войти через Google
+                        </button>
+                    </div>
+                    <!-- ЗНАЧОК НАСТРОЕК РЯДОМ С КНОПКОЙ ВХОДА -->
+                    <button class="settings-icon-btn" id="settings-icon-btn" title="Настройки звука">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                <div class="header-center">
+                    <h1>Deynik Focus</h1>
+                </div>
+                <div class="header-right">
+                    <!-- МЕНЮ СЕРВИСОВ -->
+                    <div class="services-menu">
+                        <button class="services-btn" id="services-btn">
+                            <i class="fas fa-th"></i> Сервисы
+                        </button>
+                        <div class="services-dropdown" id="services-dropdown">
+                            <div class="services-grid">
+                                <div class="service-item active">
+                                    <div class="service-icon">⏱️</div>
+                                    <div class="service-name">Focus</div>
+                                    <div class="service-desc">Таймер</div>
+                                </div>
+                                <div class="service-item" onclick="window.open('https://deyniik.github.io/DeynikRadio/', '_blank')">
+                                    <div class="service-icon">📻</div>
+                                    <div class="service-name">Radio</div>
+                                    <div class="service-desc">Музыка</div>
+                                </div>
+                                <div class="service-item" onclick="window.open('https://deyniik.github.io/Messenger/', '_blank')">
+                                    <div class="service-icon">💬</div>
+                                    <div class="service-name">Messenger</div>
+                                    <div class="service-desc">Общение</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content">
+                <!-- Левая панель: Режимы (Будильник/Таймер/Секундомер) -->
+                <div class="side-panel left-panel crt-effect">
+                    <div class="mode-header">
+                        <div class="mode-title">
+                            <h2 id="mode-title">Будильник</h2>
+                        </div>
+                        <div class="mode-nav">
+                            <button class="mode-nav-btn" id="mode-prev">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="mode-nav-btn" id="mode-next">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- БУДИЛЬНИК -->
+                    <div class="alarm-container" id="alarm-mode">
+                        <div class="time-display" id="current-time">--:--</div>
+                        
+                        <div class="alarm-controls">
+                            <button class="alarm-btn" id="add-alarm-btn">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="alarms-list" id="alarms-list">
+                            <!-- Будильники будут здесь -->
+                        </div>
+                        
+                        <button class="add-alarm-btn" id="add-alarm-full-btn">
+                            <i class="fas fa-plus"></i> Добавить будильник
+                        </button>
+                    </div>
+                    
+                    <!-- ТАЙМЕР -->
+                    <div class="timer-container" id="timer-mode" style="display: none;">
+                        <div class="timer-display" id="timer-display">25:00</div>
+                        
+                        <div class="timer-controls">
+                            <button class="timer-btn" id="timer-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="timer-presets">
+                            <button class="preset-btn active" data-minutes="25">25 мин</button>
+                            <button class="preset-btn" data-minutes="15">15 мин</button>
+                            <button class="preset-btn" data-minutes="5">5 мин</button>
+                            <button class="preset-btn" data-minutes="45">45 мин</button>
+                        </div>
+                        
+                        <div class="time-picker-container">
+                            <div class="time-picker-title">Настройка времени</div>
+                            <div class="time-picker">
+                                <div class="time-input-container">
+                                    <div class="time-input-group">
+                                        <button class="time-input-btn" id="minutes-decrease">-</button>
+                                        <input type="number" class="time-input" id="minutes-input" min="0" max="120" value="25">
+                                        <button class="time-input-btn" id="minutes-increase">+</button>
+                                    </div>
+                                    <div class="time-label">минут</div>
+                                </div>
+                                <div class="time-separator">:</div>
+                                <div class="time-input-container">
+                                    <div class="time-input-group">
+                                        <button class="time-input-btn" id="seconds-decrease">-</button>
+                                        <input type="number" class="time-input" id="seconds-input" min="0" max="59" value="0">
+                                        <button class="time-input-btn" id="seconds-increase">+</button>
+                                    </div>
+                                    <div class="time-label">секунд</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- СЕКУНДОМЕР -->
+                    <div class="stopwatch-container" id="stopwatch-mode" style="display: none;">
+                        <div class="stopwatch-display" id="stopwatch-display">00:00.00</div>
+                        
+                        <div class="stopwatch-controls">
+                            <button class="stopwatch-btn" id="stopwatch-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="stopwatch-btn reset" id="reset-btn">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="stopwatch-laps" id="stopwatch-laps">
+                            <!-- Круги будут здесь -->
+                        </div>
+                    </div>
+                    
+                    <!-- РАДИО КОНТЕЙНЕР - ФИКСИРОВАННАЯ ВЫСОТА -->
+                    <div class="radio-container">
+                        <h3>Фоновое радио</h3>
+                        <div class="radio-stations" id="radio-stations">
+                            <div class="radio-station" data-station="lofi">
+                                <span class="radio-icon"><i class="fas fa-moon"></i></span>
+                                <span class="radio-name">Lo-Fi</span>
+                            </div>
+                            <div class="radio-station" data-station="chillhop">
+                                <span class="radio-icon"><i class="fas fa-headphones"></i></span>
+                                <span class="radio-name">Chillhop</span>
+                            </div>
+                            <div class="radio-station" data-station="classical">
+                                <span class="radio-icon"><i class="fas fa-music"></i></span>
+                                <span class="radio-name">Классика</span>
+                            </div>
+                            <div class="radio-station" data-station="jazz">
+                                <span class="radio-icon"><i class="fas fa-compact-disc"></i></span>
+                                <span class="radio-name">Джаз</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Центральная панель: Задачи -->
+                <div class="side-panel crt-effect">
+                    <h2>Задачи</h2>
+                    <div class="todo-input-container">
+                        <input type="text" class="todo-input" id="todo-input" 
+                               placeholder="Что нужно сделать?" maxlength="100">
+                        <button class="todo-add-btn" id="todo-add-btn">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <ul class="todo-list" id="todo-list">
+                        <!-- Задачи будут здесь -->
+                    </ul>
+                </div>
+                
+                <!-- Правая панель: Статистика и чат -->
+                <div class="side-panel crt-effect">
+                    <h2>Статистика</h2>
+                    <div class="stats-container">
+                        <div class="stat-item">
+                            <span>Сегодня:</span>
+                            <span id="today-pomodoros">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Завершено задач:</span>
+                            <span id="completed-tasks">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Всего таймеров:</span>
+                            <span id="total-pomodoros">0</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <h3>О Deynik Focus</h3>
+                        <p style="font-size: 0.8rem; color: #B3B3B3; margin-top: 8px;">
+                            Умный таймер для продуктивности с будильником, секундомером и задачами на каждый день.
+                        </p>
+                    </div>
+
+                    <!-- Кнопка для открытия/закрытия чата -->
+                    <button class="chat-toggle-btn" id="chat-toggle-btn">
+                        <i class="fas fa-comments"></i> Открыть чат
+                    </button>
+
+                    <!-- Контейнер чата -->
+                    <div class="chat-container" id="chat-container">
+                        <div class="chat-header">
+                            <i class="fas fa-comments"></i>
+                            <h3>Чат</h3>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message">
+                                <span class="message-user">Система:</span>
+                                Загрузка чата...
+                                <span class="message-time">только что</span>
+                            </div>
+                        </div>
+                        <div class="chat-input-container" id="chat-input-container">
+                            <button class="emoji-btn" id="emoji-btn">
+                                <i class="far fa-smile"></i>
+                            </button>
+                            <button class="gif-btn" id="gif-btn">
+                                GIF
+                            </button>
+                            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение..." maxlength="200">
+                            <button class="chat-send-btn" id="chat-send-btn" disabled>
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -957,11 +1801,64 @@
             }
         };
 
+        // ЗВУКИ БУДИЛЬНИКА
+        const alarmSounds = {
+            classic: {
+                name: "Классический",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 800;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 1);
+                }
+            },
+            chime: {
+                name: "Колокольчик",
+                createSound: function() {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const times = [0, 0.3, 0.6, 0.9, 1.2];
+                    const frequencies = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+                    
+                    times.forEach((time, index) => {
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.value = frequencies[index];
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0, audioContext.currentTime + time);
+                        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + time + 0.1);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + time + 0.8);
+                        
+                        oscillator.start(audioContext.currentTime + time);
+                        oscillator.stop(audioContext.currentTime + time + 0.8);
+                    });
+                }
+            }
+        };
+
+        // Дни недели на русском
+        const daysOfWeek = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+
         // ПРОСТОЙ И РАБОЧИЙ ВАРИАНТ ЗАГРУЗКИ
         window.onload = function() {
             setTimeout(function() {
                 document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('mainContainer').style.display = 'flex';
+                document.getElementById('appContainer').style.display = 'flex';
                 initApp();
             }, 1000);
         };
@@ -970,13 +1867,33 @@
             console.log('Deynik Focus запущен!');
             
             // Элементы DOM
+            const modeTitle = document.getElementById('mode-title');
+            const modePrev = document.getElementById('mode-prev');
+            const modeNext = document.getElementById('mode-next');
+            const alarmMode = document.getElementById('alarm-mode');
+            const timerMode = document.getElementById('timer-mode');
+            const stopwatchMode = document.getElementById('stopwatch-mode');
+            const currentTime = document.getElementById('current-time');
             const timerDisplay = document.getElementById('timer-display');
-            const timerStartBtn = document.getElementById('timer-start-btn');
-            const timerPauseBtn = document.getElementById('timer-pause-btn');
-            const timerResetBtn = document.getElementById('timer-reset-btn');
+            const timerBtn = document.getElementById('timer-btn');
+            const stopwatchDisplay = document.getElementById('stopwatch-display');
+            const stopwatchBtn = document.getElementById('stopwatch-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const stopwatchLaps = document.getElementById('stopwatch-laps');
             const minutesInput = document.getElementById('minutes-input');
             const secondsInput = document.getElementById('seconds-input');
-            const setTimeBtn = document.getElementById('set-time-btn');
+            const minutesDecrease = document.getElementById('minutes-decrease');
+            const minutesIncrease = document.getElementById('minutes-increase');
+            const secondsDecrease = document.getElementById('seconds-decrease');
+            const secondsIncrease = document.getElementById('seconds-increase');
+            const presetBtns = document.querySelectorAll('.preset-btn');
+            const settingsIconBtn = document.getElementById('settings-icon-btn');
+            const soundSettingsModal = document.getElementById('soundSettingsModal');
+            const closeSoundModal = document.getElementById('closeSoundModal');
+            const cancelSoundBtn = document.getElementById('cancelSoundBtn');
+            const saveSoundBtn = document.getElementById('saveSoundBtn');
+            const soundOptions = document.querySelectorAll('.sound-option');
+            const soundPreviewBtns = document.querySelectorAll('.sound-preview-btn');
             const radioStationsContainer = document.getElementById('radio-stations');
             const todoInput = document.getElementById('todo-input');
             const todoAddBtn = document.getElementById('todo-add-btn');
@@ -984,8 +1901,8 @@
             const todayPomodoros = document.getElementById('today-pomodoros');
             const completedTasks = document.getElementById('completed-tasks');
             const totalPomodoros = document.getElementById('total-pomodoros');
-            const radioNavBtn = document.getElementById('radioNavBtn');
-            const themeSwitcher = document.getElementById('themeSwitcher');
+            const servicesBtn = document.getElementById('services-btn');
+            const servicesDropdown = document.getElementById('services-dropdown');
             const notification = document.getElementById('notification');
             const googleLoginBtn = document.getElementById('googleLoginBtn');
             const chatToggleBtn = document.getElementById('chat-toggle-btn');
@@ -993,23 +1910,47 @@
             const chatMessages = document.getElementById('chat-messages');
             const chatInput = document.getElementById('chat-input');
             const chatSendBtn = document.getElementById('chat-send-btn');
+            const addAlarmBtn = document.getElementById('add-alarm-btn');
+            const addAlarmFullBtn = document.getElementById('add-alarm-full-btn');
+            const alarmModal = document.getElementById('alarmModal');
+            const closeAlarmModal = document.getElementById('closeAlarmModal');
+            const cancelAlarmBtn = document.getElementById('cancelAlarmBtn');
+            const saveAlarmBtn = document.getElementById('saveAlarmBtn');
+            const alarmHours = document.getElementById('alarm-hours');
+            const alarmMinutes = document.getElementById('alarm-minutes');
+            const alarmsList = document.getElementById('alarms-list');
             
-            // Переменные таймера
+            // Переменные приложения
+            let currentMode = 0; // 0-будильник, 1-таймер, 2-секундомер
+            const modes = ['Будильник', 'Таймер', 'Секундомер'];
             let timer;
-            let isRunning = false;
-            let timeLeft = 25 * 60; // 25 минут по умолчанию
+            let isTimerRunning = false;
+            let timerTimeLeft = 25 * 60;
+            let stopwatchTime = 0;
+            let stopwatchRunning = false;
+            let stopwatchInterval;
+            let laps = [];
             let totalPomodoroCount = 0;
             let todayPomodoroCount = 0;
             let completedTasksCount = 0;
             let currentAudio = null;
             let currentRadioStation = null;
+            let currentAlarmSound = 'classic';
             let chatUnsubscribe = null;
+            let isChatOpen = false;
+            let alarms = [];
+            let alarmCheckInterval = null;
             
             // Инициализация
+            updateClock();
+            setInterval(updateClock, 1000);
             updateTimerDisplay();
+            updateStopwatchDisplay();
             loadUserData();
             loadTodos();
             loadChatHistory();
+            loadAlarms();
+            startAlarmChecker();
             
             // Функция показа уведомления
             function showNotification(message, type = 'info') {
@@ -1031,143 +1972,317 @@
                 }, 3000);
             }
             
-            // Обновление отображения таймера
-            function updateTimerDisplay() {
-                const minutes = Math.floor(timeLeft / 60);
-                const seconds = timeLeft % 60;
-                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            // Обновление часов
+            function updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                currentTime.textContent = timeString;
+                
+                // Проверка будильников
+                checkAlarms(now);
             }
             
-            // Запуск таймера
-            function startTimer() {
-                if (isRunning) return;
+            // Переключение режимов
+            function switchMode(direction) {
+                currentMode = (currentMode + direction + modes.length) % modes.length;
+                updateModeDisplay();
+            }
+            
+            function updateModeDisplay() {
+                modeTitle.textContent = modes[currentMode];
                 
-                isRunning = true;
-                timerStartBtn.style.display = 'none';
-                timerPauseBtn.style.display = 'flex';
+                // Скрываем все режимы
+                alarmMode.style.display = 'none';
+                timerMode.style.display = 'none';
+                stopwatchMode.style.display = 'none';
                 
-                timer = setInterval(() => {
-                    timeLeft--;
-                    updateTimerDisplay();
-                    
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        isRunning = false;
-                        timerComplete();
+                // Показываем текущий режим
+                if (currentMode === 0) {
+                    alarmMode.style.display = 'flex';
+                } else if (currentMode === 1) {
+                    timerMode.style.display = 'flex';
+                } else if (currentMode === 2) {
+                    stopwatchMode.style.display = 'flex';
+                }
+            }
+            
+            // БУДИЛЬНИКИ
+            function loadAlarms() {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('alarms')
+                    .orderBy('time')
+                    .onSnapshot((snapshot) => {
+                        alarms = [];
+                        alarmsList.innerHTML = '';
+                        
+                        snapshot.forEach((doc) => {
+                            const alarm = { id: doc.id, ...doc.data() };
+                            alarms.push(alarm);
+                            addAlarmToDOM(alarm);
+                        });
+                        
+                        if (snapshot.empty) {
+                            alarmsList.innerHTML = '<div class="alarm-item" style="justify-content: center; color: #666;">Будильников нет</div>';
+                        }
+                    });
+            }
+            
+            function addAlarmToDOM(alarm) {
+                const alarmElement = document.createElement('div');
+                alarmElement.className = `alarm-item ${alarm.enabled ? 'active' : ''}`;
+                alarmElement.setAttribute('data-id', alarm.id);
+                
+                const timeString = alarm.time;
+                const [hours, minutes] = timeString.split(':');
+                const formattedTime = `${hours.padStart(2, '0')}:${minutes.padStart(2, '0')}`;
+                
+                alarmElement.innerHTML = `
+                    <div>
+                        <div class="alarm-time">${formattedTime}</div>
+                        <div class="alarm-label">Будильник</div>
+                    </div>
+                    <label class="alarm-switch">
+                        <input type="checkbox" ${alarm.enabled ? 'checked' : ''}>
+                        <span class="alarm-slider"></span>
+                    </label>
+                `;
+                
+                const switchInput = alarmElement.querySelector('input');
+                switchInput.addEventListener('change', () => toggleAlarm(alarm.id, switchInput.checked));
+                
+                // Двойной клик для удаления
+                alarmElement.addEventListener('dblclick', () => deleteAlarm(alarm.id));
+                
+                alarmsList.appendChild(alarmElement);
+            }
+            
+            function toggleAlarm(alarmId, enabled) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                db.collection('users').doc(user.uid).collection('alarms').doc(alarmId).update({
+                    enabled: enabled
+                });
+                
+                showNotification(enabled ? 'Будильник включен' : 'Будильник выключен', 'info');
+            }
+            
+            function deleteAlarm(alarmId) {
+                const user = auth.currentUser;
+                if (!user) return;
+                
+                if (confirm('Удалить этот будильник?')) {
+                    db.collection('users').doc(user.uid).collection('alarms').doc(alarmId).delete();
+                    showNotification('Будильник удален', 'info');
+                }
+            }
+            
+            function addAlarm(hours, minutes) {
+                const user = auth.currentUser;
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы добавлять будильники', 'error');
+                    return;
+                }
+                
+                const timeString = `${hours}:${minutes.toString().padStart(2, '0')}`;
+                
+                const alarm = {
+                    time: timeString,
+                    enabled: true,
+                    createdAt: new Date()
+                };
+                
+                db.collection('users').doc(user.uid).collection('alarms').add(alarm)
+                    .then(() => {
+                        alarmModal.style.display = 'none';
+                        showNotification('Будильник добавлен!', 'success');
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка добавления будильника:', error);
+                        showNotification('Ошибка добавления будильника', 'error');
+                    });
+            }
+            
+            function checkAlarms(now) {
+                const currentTime = now.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                
+                alarms.forEach(alarm => {
+                    if (alarm.enabled && alarm.time === currentTime) {
+                        playAlarmSound();
+                        showNotification('⏰ Время будильника!', 'success');
+                        
+                        // Отключаем будильник после срабатывания
+                        toggleAlarm(alarm.id, false);
                     }
+                });
+            }
+            
+            function startAlarmChecker() {
+                alarmCheckInterval = setInterval(() => {
+                    checkAlarms(new Date());
                 }, 1000);
             }
             
-            // Пауза таймера
-            function pauseTimer() {
-                if (!isRunning) return;
-                
-                clearInterval(timer);
-                isRunning = false;
-                timerStartBtn.style.display = 'flex';
-                timerPauseBtn.style.display = 'none';
+            // ТАЙМЕР
+            function updateTimerDisplay() {
+                const minutes = Math.floor(timerTimeLeft / 60);
+                const seconds = timerTimeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
             
-            // Сброс таймера
+            function toggleTimer() {
+                if (isTimerRunning) {
+                    // Пауза
+                    clearInterval(timer);
+                    isTimerRunning = false;
+                    timerBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    showNotification('Таймер на паузе', 'info');
+                } else {
+                    // Запуск
+                    if (timerTimeLeft <= 0) {
+                        showNotification('Установите время больше 0', 'error');
+                        return;
+                    }
+                    
+                    isTimerRunning = true;
+                    timerBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    
+                    timer = setInterval(() => {
+                        timerTimeLeft--;
+                        updateTimerDisplay();
+                        
+                        if (timerTimeLeft <= 0) {
+                            clearInterval(timer);
+                            isTimerRunning = false;
+                            timerComplete();
+                        }
+                    }, 1000);
+                }
+            }
+            
             function resetTimer() {
                 clearInterval(timer);
-                isRunning = false;
-                timeLeft = parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
+                isTimerRunning = false;
+                timerTimeLeft = parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
                 updateTimerDisplay();
-                timerStartBtn.style.display = 'flex';
-                timerPauseBtn.style.display = 'none';
+                timerBtn.innerHTML = '<i class="fas fa-play"></i>';
             }
             
-            // Установка времени
-            function setTime() {
-                const minutes = parseInt(minutesInput.value) || 0;
-                const seconds = parseInt(secondsInput.value) || 0;
-                
-                if (minutes < 0 || minutes > 120 || seconds < 0 || seconds > 59) {
-                    showNotification('Некорректное время!', 'error');
-                    return;
-                }
-                
-                if (minutes === 0 && seconds === 0) {
-                    showNotification('Установите время больше 0', 'error');
-                    return;
-                }
-                
-                if (isRunning) {
+            function setTimerTime(minutes, seconds = 0) {
+                if (isTimerRunning) {
                     showNotification('Сначала остановите таймер', 'error');
                     return;
                 }
                 
-                timeLeft = minutes * 60 + seconds;
+                minutesInput.value = minutes;
+                secondsInput.value = seconds;
+                timerTimeLeft = minutes * 60 + seconds;
                 updateTimerDisplay();
-                showNotification(`Время установлено: ${minutes}:${seconds.toString().padStart(2, '0')}`, 'success');
             }
             
-            // Завершение таймера
             function timerComplete() {
-                // Воспроизведение звука уведомления
-                playNotificationSound();
-                
+                playAlarmSound();
                 totalPomodoroCount++;
                 todayPomodoroCount++;
-                
-                // Обновление статистики
                 updateStats();
                 saveUserData();
-                
-                // Показ уведомления
                 showNotification('Таймер завершен!', 'success');
-                
-                // Автоматический сброс
-                setTimeout(() => {
-                    resetTimer();
-                }, 2000);
+                setTimeout(() => resetTimer(), 2000);
             }
             
-            // Воспроизведение звука уведомления
-            function playNotificationSound() {
+            // СЕКУНДОМЕР
+            function updateStopwatchDisplay() {
+                const minutes = Math.floor(stopwatchTime / 60000);
+                const seconds = Math.floor((stopwatchTime % 60000) / 1000);
+                const milliseconds = Math.floor((stopwatchTime % 1000) / 10);
+                stopwatchDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+            }
+            
+            function toggleStopwatch() {
+                if (stopwatchRunning) {
+                    // Пауза
+                    clearInterval(stopwatchInterval);
+                    stopwatchRunning = false;
+                    stopwatchBtn.innerHTML = '<i class="fas fa-play"></i>';
+                } else {
+                    // Запуск
+                    stopwatchRunning = true;
+                    stopwatchBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    const startTime = Date.now() - stopwatchTime;
+                    
+                    stopwatchInterval = setInterval(() => {
+                        stopwatchTime = Date.now() - startTime;
+                        updateStopwatchDisplay();
+                    }, 10);
+                }
+            }
+            
+            function resetStopwatch() {
+                clearInterval(stopwatchInterval);
+                stopwatchRunning = false;
+                stopwatchTime = 0;
+                stopwatchBtn.innerHTML = '<i class="fas fa-play"></i>';
+                laps = [];
+                updateStopwatchLaps();
+                updateStopwatchDisplay();
+            }
+            
+            function updateStopwatchLaps() {
+                stopwatchLaps.innerHTML = '';
+                laps.forEach(lap => {
+                    const minutes = Math.floor(lap.time / 60000);
+                    const seconds = Math.floor((lap.time % 60000) / 1000);
+                    const milliseconds = Math.floor((lap.time % 1000) / 10);
+                    
+                    const lapElement = document.createElement('div');
+                    lapElement.className = 'lap-item';
+                    lapElement.textContent = `Круг ${lap.number}: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(2, '0')}`;
+                    stopwatchLaps.appendChild(lapElement);
+                });
+            }
+            
+            // ЗВУКИ
+            function playAlarmSound() {
                 try {
-                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = 800;
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 1);
+                    const sound = alarmSounds[currentAlarmSound];
+                    if (sound && sound.createSound) {
+                        sound.createSound();
+                    }
                 } catch (e) {
                     console.log('Audio context not supported');
                 }
             }
             
-            // Воспроизведение радио
+            function previewAlarmSound(soundType) {
+                try {
+                    const sound = alarmSounds[soundType];
+                    if (sound && sound.createSound) {
+                        sound.createSound();
+                    }
+                } catch (e) {
+                    console.log('Audio context not supported for preview');
+                }
+            }
+            
+            // РАДИО
             function playRadio(stationId) {
-                // Останавливаем текущее радио
                 if (currentAudio) {
                     currentAudio.pause();
                     currentAudio = null;
                 }
                 
-                // Снимаем выделение со всех станций
                 document.querySelectorAll('.radio-station').forEach(station => {
                     station.classList.remove('active');
                 });
                 
-                // Если выбрана та же станция - просто выключаем
                 if (currentRadioStation === stationId) {
                     currentRadioStation = null;
                     showNotification('Радио выключено', 'info');
                     return;
                 }
                 
-                // Включаем выбранную станцию
                 const station = radioStations[stationId];
                 if (!station) return;
                 
@@ -1188,7 +2303,87 @@
                 }
             }
             
-            // Работа с задачами
+            // НАСТРОЙКИ ЗВУКА
+            settingsIconBtn.addEventListener('click', function() {
+                soundOptions.forEach(option => {
+                    if (option.dataset.sound === currentAlarmSound) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+                soundSettingsModal.style.display = 'block';
+            });
+            
+            closeSoundModal.addEventListener('click', function() {
+                soundSettingsModal.style.display = 'none';
+            });
+            
+            cancelSoundBtn.addEventListener('click', function() {
+                soundSettingsModal.style.display = 'none';
+            });
+            
+            soundOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    soundOptions.forEach(opt => opt.classList.remove('active'));
+                    this.classList.add('active');
+                    currentAlarmSound = this.dataset.sound;
+                });
+            });
+            
+            soundPreviewBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const soundType = this.dataset.sound;
+                    previewAlarmSound(soundType);
+                });
+            });
+            
+            saveSoundBtn.addEventListener('click', function() {
+                soundSettingsModal.style.display = 'none';
+                saveUserData();
+                showNotification(`Звук сохранен: ${alarmSounds[currentAlarmSound].name}`, 'success');
+            });
+            
+            // МОДАЛЬНОЕ ОКНО БУДИЛЬНИКА
+            addAlarmBtn.addEventListener('click', function() {
+                alarmModal.style.display = 'block';
+            });
+            
+            addAlarmFullBtn.addEventListener('click', function() {
+                alarmModal.style.display = 'block';
+            });
+            
+            closeAlarmModal.addEventListener('click', function() {
+                alarmModal.style.display = 'none';
+            });
+            
+            cancelAlarmBtn.addEventListener('click', function() {
+                alarmModal.style.display = 'none';
+            });
+            
+            saveAlarmBtn.addEventListener('click', function() {
+                const hours = parseInt(alarmHours.value) || 0;
+                const minutes = parseInt(alarmMinutes.value) || 0;
+                
+                if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+                    showNotification('Введите корректное время', 'error');
+                    return;
+                }
+                
+                addAlarm(hours, minutes);
+            });
+            
+            window.addEventListener('click', function(event) {
+                if (event.target === soundSettingsModal) {
+                    soundSettingsModal.style.display = 'none';
+                }
+                if (event.target === alarmModal) {
+                    alarmModal.style.display = 'none';
+                }
+            });
+            
+            // ЗАДАЧИ
             function addTodo() {
                 const text = todoInput.value.trim();
                 if (text === '') return;
@@ -1292,13 +2487,21 @@
             
             function loadTodos() {
                 const user = auth.currentUser;
-                if (!user) return;
+                if (!user) {
+                    todoList.innerHTML = '<div class="todo-item">Войдите, чтобы видеть задачи</div>';
+                    return;
+                }
                 
                 db.collection('users').doc(user.uid).collection('todos')
                     .orderBy('createdAt', 'desc')
                     .onSnapshot((snapshot) => {
                         todoList.innerHTML = '';
                         completedTasksCount = 0;
+                        
+                        if (snapshot.empty) {
+                            todoList.innerHTML = '<div class="todo-item">Задач пока нет</div>';
+                            return;
+                        }
                         
                         snapshot.forEach((doc) => {
                             const todo = doc.data();
@@ -1313,7 +2516,7 @@
                     });
             }
             
-            // Работа с пользовательскими данными
+            // ДАННЫЕ ПОЛЬЗОВАТЕЛЯ
             function saveUserData() {
                 const user = auth.currentUser;
                 if (!user) return;
@@ -1321,7 +2524,8 @@
                 const userData = {
                     totalPomodoros: totalPomodoroCount,
                     todayPomodoros: todayPomodoroCount,
-                    lastUpdated: new Date()
+                    lastUpdated: new Date(),
+                    alarmSound: currentAlarmSound
                 };
                 
                 db.collection('users').doc(user.uid).set(userData, { merge: true });
@@ -1336,8 +2540,8 @@
                         const data = doc.data();
                         totalPomodoroCount = data.totalPomodoros || 0;
                         todayPomodoroCount = data.todayPomodoros || 0;
+                        currentAlarmSound = data.alarmSound || 'classic';
                         
-                        // Сброс дневного счетчика если это новый день
                         const lastUpdated = data.lastUpdated?.toDate();
                         const today = new Date();
                         if (lastUpdated && (
@@ -1359,11 +2563,11 @@
                 completedTasks.textContent = completedTasksCount;
             }
             
-            // Работа с чатом
+            // ЧАТ
             function loadChatHistory() {
                 if (chatUnsubscribe) chatUnsubscribe();
                 
-                chatUnsubscribe = db.collection('focusChat')
+                chatUnsubscribe = db.collection('chat')
                     .orderBy('timestamp', 'desc')
                     .limit(50)
                     .onSnapshot((snapshot) => {
@@ -1390,6 +2594,9 @@
                         });
                         
                         chatMessages.scrollTop = chatMessages.scrollHeight;
+                    }, (error) => {
+                        console.error('Ошибка загрузки чата:', error);
+                        chatMessages.innerHTML = '<div class="message">Ошибка загрузки чата</div>';
                     });
             }
             
@@ -1403,12 +2610,22 @@
                     timeString = time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
                 }
                 
-                messageElement.innerHTML = `
-                    <span class="message-user">${message.userName || 'Аноним'}:</span>
-                    ${message.text || ''}
-                    <span class="message-time">${timeString}</span>
-                `;
+                let messageContent = '';
+                if (message.gif) {
+                    messageContent = `
+                        <span class="message-user">${message.userName || 'Аноним'}:</span>
+                        <img src="${message.gif}" style="max-width: 200px; border-radius: 8px; margin-top: 5px;" alt="GIF">
+                        <span class="message-time">${timeString}</span>
+                    `;
+                } else {
+                    messageContent = `
+                        <span class="message-user">${message.userName || 'Аноним'}:</span>
+                        ${message.text || ''}
+                        <span class="message-time">${timeString}</span>
+                    `;
+                }
                 
+                messageElement.innerHTML = messageContent;
                 chatMessages.appendChild(messageElement);
             }
             
@@ -1417,21 +2634,31 @@
                 const messageText = chatInput.value.trim();
                 if (messageText === '') return;
                 
-                const displayName = user ? (user.displayName || 'Пользователь') : 'Аноним';
+                if (!user) {
+                    showNotification('Войдите в систему, чтобы отправлять сообщения', 'error');
+                    return;
+                }
+                
+                const displayName = user.displayName || 'Пользователь';
                 
                 const message = {
                     text: messageText,
                     userName: displayName,
-                    userId: user ? user.uid : 'anonymous',
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    userId: user.uid,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    reactions: {}
                 };
                 
                 chatSendBtn.disabled = true;
                 chatSendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 
-                db.collection('focusChat').add(message)
+                db.collection('chat').add(message)
                     .then(() => {
                         chatInput.value = '';
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка отправки сообщения:', error);
+                        showNotification('Ошибка отправки сообщения', 'error');
                     })
                     .finally(() => {
                         chatSendBtn.disabled = false;
@@ -1439,7 +2666,19 @@
                     });
             }
             
-            // Функции для аутентификации
+            function toggleChat() {
+                isChatOpen = !isChatOpen;
+                chatContainer.classList.toggle('show');
+                
+                if (isChatOpen) {
+                    chatToggleBtn.innerHTML = '<i class="fas fa-times"></i> Закрыть чат';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                } else {
+                    chatToggleBtn.innerHTML = '<i class="fas fa-comments"></i> Открыть чат';
+                }
+            }
+            
+            // АУТЕНТИФИКАЦИЯ
             function updateAuthUI(user) {
                 const authSection = document.getElementById('auth-section');
                 
@@ -1456,6 +2695,7 @@
                     
                     loadUserData();
                     loadTodos();
+                    loadAlarms();
                     
                 } else {
                     authSection.innerHTML = `
@@ -1474,11 +2714,90 @@
                 auth.signInWithPopup(provider);
             }
             
-            // Обработчики событий
-            timerStartBtn.addEventListener('click', startTimer);
-            timerPauseBtn.addEventListener('click', pauseTimer);
-            timerResetBtn.addEventListener('click', resetTimer);
-            setTimeBtn.addEventListener('click', setTime);
+            // ОБРАБОТЧИКИ СОБЫТИЙ
+            modePrev.addEventListener('click', () => switchMode(-1));
+            modeNext.addEventListener('click', () => switchMode(1));
+            timerBtn.addEventListener('click', toggleTimer);
+            stopwatchBtn.addEventListener('click', toggleStopwatch);
+            resetBtn.addEventListener('click', resetStopwatch);
+            
+            // Таймер - управление временем
+            minutesIncrease.addEventListener('click', function() {
+                const current = parseInt(minutesInput.value) || 0;
+                if (current < 120) {
+                    minutesInput.value = current + 1;
+                    if (!isTimerRunning) {
+                        timerTimeLeft = minutesInput.value * 60 + parseInt(secondsInput.value);
+                        updateTimerDisplay();
+                    }
+                }
+            });
+            
+            minutesDecrease.addEventListener('click', function() {
+                const current = parseInt(minutesInput.value) || 0;
+                if (current > 0) {
+                    minutesInput.value = current - 1;
+                    if (!isTimerRunning) {
+                        timerTimeLeft = minutesInput.value * 60 + parseInt(secondsInput.value);
+                        updateTimerDisplay();
+                    }
+                }
+            });
+            
+            secondsIncrease.addEventListener('click', function() {
+                const current = parseInt(secondsInput.value) || 0;
+                if (current < 59) {
+                    secondsInput.value = current + 1;
+                } else {
+                    secondsInput.value = 0;
+                    minutesInput.value = (parseInt(minutesInput.value) || 0) + 1;
+                }
+                if (!isTimerRunning) {
+                    timerTimeLeft = parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
+                    updateTimerDisplay();
+                }
+            });
+            
+            secondsDecrease.addEventListener('click', function() {
+                const current = parseInt(secondsInput.value) || 0;
+                if (current > 0) {
+                    secondsInput.value = current - 1;
+                } else if (parseInt(minutesInput.value) > 0) {
+                    secondsInput.value = 59;
+                    minutesInput.value = (parseInt(minutesInput.value) || 0) - 1;
+                }
+                if (!isTimerRunning) {
+                    timerTimeLeft = parseInt(minutesInput.value) * 60 + parseInt(secondsInput.value);
+                    updateTimerDisplay();
+                }
+            });
+            
+            minutesInput.addEventListener('input', function() {
+                if (!isTimerRunning) {
+                    const minutes = parseInt(this.value) || 0;
+                    const seconds = parseInt(secondsInput.value) || 0;
+                    timerTimeLeft = minutes * 60 + seconds;
+                    updateTimerDisplay();
+                }
+            });
+            
+            secondsInput.addEventListener('input', function() {
+                if (!isTimerRunning) {
+                    const minutes = parseInt(minutesInput.value) || 0;
+                    const seconds = parseInt(this.value) || 0;
+                    timerTimeLeft = minutes * 60 + seconds;
+                    updateTimerDisplay();
+                }
+            });
+            
+            // Пресеты таймера
+            presetBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    presetBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    setTimerTime(parseInt(this.dataset.minutes));
+                });
+            });
             
             // Радио станции
             document.querySelectorAll('.radio-station').forEach(station => {
@@ -1487,47 +2806,41 @@
                 });
             });
             
+            // Задачи
             todoAddBtn.addEventListener('click', addTodo);
             todoInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') addTodo();
             });
             
-            radioNavBtn.addEventListener('click', function() {
-                window.location.href = 'РАДИО.html';
+            // Меню сервисов
+            servicesBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                servicesDropdown.classList.toggle('show');
             });
             
-            themeSwitcher.addEventListener('click', function() {
-                // Простая смена темы
-                document.body.classList.toggle('retro-theme');
-                document.body.classList.toggle('cyber-theme');
-                
-                if (document.body.classList.contains('cyber-theme')) {
-                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Кибер';
-                } else {
-                    themeSwitcher.innerHTML = '<i class="fas fa-palette"></i> Ретро';
-                }
+            document.addEventListener('click', function() {
+                servicesDropdown.classList.remove('show');
+            });
+            
+            servicesDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
             
             // Чат
-            chatToggleBtn.addEventListener('click', function() {
-                chatContainer.classList.toggle('show');
-            });
-            
+            chatToggleBtn.addEventListener('click', toggleChat);
             chatInput.addEventListener('input', function() {
                 chatSendBtn.disabled = this.value.trim() === '';
             });
-            
             chatInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter' && !chatSendBtn.disabled) sendMessage();
             });
-            
             chatSendBtn.addEventListener('click', sendMessage);
             
-            // Слушатель состояния аутентификации
+            // Слушатель аутентификации
             auth.onAuthStateChanged(updateAuthUI);
             
-            // Инициализация при загрузке
-            timerPauseBtn.style.display = 'none';
+            // Инициализация отображения (будильник по умолчанию)
+            updateModeDisplay();
         }
     </script>
 </body>
