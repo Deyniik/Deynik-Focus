@@ -228,24 +228,46 @@
             transform: scale(1.05);
         }
         
-        /* СЕРВИСЫ КАК ОТДЕЛЬНЫЕ КНОПКИ */
+        /* СЕРВИСЫ КАК КВАДРАТНЫЕ КНОПКИ */
         .service-btn {
             background: rgba(40, 40, 40, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 0.8rem;
             transition: all 0.3s ease;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            height: 60px;
+            width: 70px;
+            text-align: center;
+            box-sizing: border-box;
         }
         
         .service-btn:hover {
             background: rgba(29, 185, 84, 0.3);
             transform: scale(1.05);
+        }
+        
+        .service-btn.active {
+            background: rgba(29, 185, 84, 0.3);
+            border-color: #1DB954;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.4);
+        }
+        
+        .service-icon {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+        
+        .service-name {
+            font-size: 0.65rem;
+            font-weight: bold;
+            line-height: 1.2;
         }
         
         h1 {
@@ -329,6 +351,7 @@
             gap: 20px;
             margin: 10px 0;
             flex: 1;
+            min-height: 0;
         }
         
         .time-display {
@@ -338,12 +361,14 @@
             text-shadow: 0 0 20px rgba(29, 185, 84, 0.8);
             margin: 10px 0;
             letter-spacing: 2px;
+            flex-shrink: 0;
         }
         
         .alarm-controls {
             display: flex;
             gap: 20px;
             margin-bottom: 10px;
+            flex-shrink: 0;
         }
         
         /* УМЕНЬШЕННЫЕ КНОПКИ */
@@ -384,6 +409,22 @@
             margin-top: 10px;
             flex: 1;
             overflow-y: auto;
+            min-height: 0;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
+        }
+        
+        .alarms-list::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .alarms-list::-webkit-scrollbar-track {
+            background: #191414;
+        }
+        
+        .alarms-list::-webkit-scrollbar-thumb {
+            background-color: rgba(29, 185, 84, 0.3);
+            border-radius: 5px;
         }
         
         .alarm-item {
@@ -499,6 +540,7 @@
             gap: 8px;
             margin-top: 10px;
             width: 100%;
+            flex-shrink: 0;
         }
         
         .add-alarm-btn:hover {
@@ -514,6 +556,7 @@
             gap: 20px;
             margin: 10px 0;
             flex: 1;
+            min-height: 0;
         }
         
         .timer-display, .stopwatch-display {
@@ -522,12 +565,14 @@
             color: #1DB954;
             text-shadow: 0 0 15px rgba(29, 185, 84, 0.7);
             margin: 10px 0;
+            flex-shrink: 0;
         }
         
         .timer-controls, .stopwatch-controls {
             display: flex;
             gap: 20px;
             margin-bottom: 10px;
+            flex-shrink: 0;
         }
         
         .timer-presets, .stopwatch-laps {
@@ -536,6 +581,7 @@
             margin-top: 15px;
             flex-wrap: wrap;
             justify-content: center;
+            flex-shrink: 0;
         }
         
         .preset-btn {
@@ -579,6 +625,7 @@
             margin-top: 15px;
             width: 100%;
             max-width: 260px;
+            flex-shrink: 0;
         }
         
         .time-picker-title {
@@ -1039,6 +1086,7 @@
             scrollbar-width: thin;
             scrollbar-color: rgba(29, 185, 84, 0.3) #191414;
             padding-right: 5px;
+            min-height: 0;
         }
         
         .todo-list::-webkit-scrollbar {
@@ -1563,8 +1611,13 @@
             }
             
             .service-btn {
-                font-size: 0.7rem;
-                padding: 4px 8px;
+                width: 60px;
+                height: 55px;
+                padding: 6px 8px;
+            }
+            
+            .service-name {
+                font-size: 0.6rem;
             }
             
             .emoji-picker, .gif-picker {
@@ -1687,12 +1740,18 @@
                     <h1>Deynik Focus</h1>
                 </div>
                 <div class="header-right">
-                    <!-- ОТДЕЛЬНЫЕ КНОПКИ СЕРВИСОВ -->
+                    <!-- КВАДРАТНЫЕ КНОПКИ СЕРВИСОВ -->
+                    <button class="service-btn active">
+                        <div class="service-icon">⏱️</div>
+                        <div class="service-name">Focus</div>
+                    </button>
                     <button class="service-btn" onclick="window.open('https://deyniik.github.io/DeynikRadio/', '_blank')">
-                        <i class="fas fa-radio"></i> Radio
+                        <div class="service-icon">📻</div>
+                        <div class="service-name">Radio</div>
                     </button>
                     <button class="service-btn" onclick="window.open('https://deyniik.github.io/Messenger/', '_blank')">
-                        <i class="fas fa-comments"></i> Messenger
+                        <div class="service-icon">💬</div>
+                        <div class="service-name">Messenger</div>
                     </button>
                 </div>
             </header>
@@ -2320,7 +2379,7 @@
                 }
             }
             
-            // БУДИЛЬНИКИ
+            // БУДИЛЬНИКИ - С ПРАВИЛЬНОЙ СОРТИРОВКОЙ
             function loadAlarms() {
                 const user = auth.currentUser;
                 if (!user) return;
@@ -2331,9 +2390,21 @@
                         alarms = [];
                         alarmsList.innerHTML = '';
                         
+                        // Сначала собираем все будильники
                         snapshot.forEach((doc) => {
                             const alarm = { id: doc.id, ...doc.data() };
                             alarms.push(alarm);
+                        });
+                        
+                        // Сортируем: сначала включенные, потом выключенные
+                        alarms.sort((a, b) => {
+                            if (a.enabled && !b.enabled) return -1;
+                            if (!a.enabled && b.enabled) return 1;
+                            return a.time.localeCompare(b.time);
+                        });
+                        
+                        // Добавляем в DOM
+                        alarms.forEach(alarm => {
                             addAlarmToDOM(alarm);
                         });
                         
@@ -2697,7 +2768,7 @@
                 }
             });
             
-            // ЗАДАЧИ С ПЕРЕКЛЮЧАТЕЛЕМ ДАТ
+            // ЗАДАЧИ С ПЕРЕКЛЮЧАТЕЛЕМ ДАТ - ИСПРАВЛЕННОЕ СОХРАНЕНИЕ
             function updateDateDisplay() {
                 const dayOfWeek = daysOfWeek[currentDate.getDay()];
                 const dayOfMonth = currentDate.getDate();
@@ -2788,17 +2859,37 @@
                 }
             }
             
-            // Firebase функции для задач
+            // Firebase функции для задач - ИСПРАВЛЕННЫЕ
             function saveTodo(todo) {
                 const user = auth.currentUser;
-                if (!user) return;
+                if (!user) {
+                    // Если пользователь не авторизован, сохраняем в localStorage
+                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
+                    const dateKey = currentDate.toISOString().split('T')[0];
+                    if (!todos[dateKey]) todos[dateKey] = [];
+                    todos[dateKey].push(todo);
+                    localStorage.setItem('localTodos', JSON.stringify(todos));
+                    return;
+                }
                 
                 db.collection('users').doc(user.uid).collection('todos').doc(todo.id).set(todo);
             }
             
             function updateTodoInFirebase(id, completed) {
                 const user = auth.currentUser;
-                if (!user) return;
+                if (!user) {
+                    // Если пользователь не авторизован, обновляем в localStorage
+                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
+                    const dateKey = currentDate.toISOString().split('T')[0];
+                    if (todos[dateKey]) {
+                        const todoIndex = todos[dateKey].findIndex(todo => todo.id === id);
+                        if (todoIndex !== -1) {
+                            todos[dateKey][todoIndex].completed = completed;
+                            localStorage.setItem('localTodos', JSON.stringify(todos));
+                        }
+                    }
+                    return;
+                }
                 
                 db.collection('users').doc(user.uid).collection('todos').doc(id).update({
                     completed: completed
@@ -2807,20 +2898,50 @@
             
             function deleteTodoFromFirebase(id) {
                 const user = auth.currentUser;
-                if (!user) return;
+                if (!user) {
+                    // Если пользователь не авторизован, удаляем из localStorage
+                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
+                    const dateKey = currentDate.toISOString().split('T')[0];
+                    if (todos[dateKey]) {
+                        todos[dateKey] = todos[dateKey].filter(todo => todo.id !== id);
+                        localStorage.setItem('localTodos', JSON.stringify(todos));
+                    }
+                    return;
+                }
                 
                 db.collection('users').doc(user.uid).collection('todos').doc(id).delete();
             }
             
             function loadTodos() {
                 const user = auth.currentUser;
+                const dateString = currentDate.toISOString().split('T')[0];
+                
+                todoList.innerHTML = '';
+                completedTasksCount = 0;
+                
                 if (!user) {
-                    todoList.innerHTML = '<div class="todo-item">Войдите, чтобы видеть задачи</div>';
+                    // Если пользователь не авторизован, загружаем из localStorage
+                    const todos = JSON.parse(localStorage.getItem('localTodos') || '{}');
+                    const dateTodos = todos[dateString] || [];
+                    
+                    if (dateTodos.length === 0) {
+                        todoList.innerHTML = '<div class="todo-item">Задач на этот день нет</div>';
+                        completedTasks.textContent = '0';
+                        return;
+                    }
+                    
+                    dateTodos.forEach(todo => {
+                        addTodoToDOM(todo);
+                        if (todo.completed) {
+                            completedTasksCount++;
+                        }
+                    });
+                    
+                    completedTasks.textContent = completedTasksCount;
                     return;
                 }
                 
-                const dateString = currentDate.toISOString().split('T')[0];
-                
+                // Если пользователь авторизован, загружаем из Firebase
                 db.collection('users').doc(user.uid).collection('todos')
                     .where('date', '==', dateString)
                     .orderBy('createdAt', 'desc')
@@ -2830,6 +2951,7 @@
                         
                         if (snapshot.empty) {
                             todoList.innerHTML = '<div class="todo-item">Задач на этот день нет</div>';
+                            completedTasks.textContent = '0';
                             return;
                         }
                         
@@ -2989,7 +3111,7 @@
                     .finally(() => {
                         chatSendBtn.disabled = false;
                         chatSendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
-                    emojiPicker.classList.remove('show');
+                        emojiPicker.classList.remove('show');
                         gifPicker.classList.remove('show');
                     });
             }
@@ -3177,6 +3299,7 @@
                     `;
                     
                     document.getElementById('googleLoginBtn').addEventListener('click', signInWithGoogle);
+                    loadTodos(); // Загружаем задачи из localStorage
                 }
             }
             
